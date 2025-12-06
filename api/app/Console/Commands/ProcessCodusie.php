@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Console\Commands;
 
 use App\Models\Landmark;
-use Exception;
 use Illuminate\Console\Command;
 
 final class ProcessCodusie extends Command
@@ -29,71 +28,49 @@ final class ProcessCodusie extends Command
      */
     public function handle()
     {
-        try {
-            $content = $this->readCsv(base_path('codusie.csv'));
+        $path = base_path('codusie.csv');
 
-            $this->info('Reading CSV file...');
-            $data = $this->transformCsv($content);
-            $this->info('Processed ' . count($data) . ' rows.');
-
-            $this->info('Saving data to database...');
-            $this->saveToDatabase($data);
-            $this->info('Data saved to database.');
-        } catch (Exception $e) {
-            $this->error($e->getMessage());
+        if (!file_exists($path)) {
+            $this->error("File not found: {$path}");
 
             return 1;
         }
 
-        return 0;
-    }
-
-    private function readCsv(string $path): ?string
-    {
-        if (!file_exists($path)) {
-            $this->error("File not found: {$path}");
-            throw new Exception("File not found: {$path}");
-        }
-
-        return file_get_contents($path);
-    }
-
-    /**
-     * Transform CSV content into array.
-     */
-    private function transformCsv(string $content): array
-    {
-        $lines = explode("\n", $content);
-        $lines = array_slice($lines, 2);
+        $this->info('Reading CSV file...');
 
         $data = [];
-        foreach ($lines as $line) {
-            // Skip empty lines (e.g. trailing newline)
-            if (mb_trim($line) === '') {
-                continue;
+        if (($handle = fopen($path, 'r')) !== false) {
+            // Skip header
+            fgetcsv($handle);
+
+            while (($row = fgetcsv($handle)) !== false) {
+                // Skip empty lines
+                if (empty($row) || (count($row) === 1 && mb_trim($row[0]) === '')) {
+                    continue;
+                }
+
+                // Split Współżędne (index 2) into Latitude and Longitude
+                if (isset($row[2])) {
+                    $coords = explode(',', $row[2]);
+                    $lat = isset($coords[0]) ? mb_trim($coords[0]) : '';
+                    $lng = isset($coords[1]) ? mb_trim($coords[1]) : '';
+
+                    // Replace index 2 with lat and insert lng at index 3
+                    array_splice($row, 2, 1, [$lat, $lng]);
+                }
+
+                $data[] = $row;
             }
-
-            // Transform line into array
-            // Using str_getcsv instead of explode to correctly handle quoted fields containing commas
-            $row = str_getcsv($line);
-
-            // Discard first element of every line
-            array_shift($row);
-
-            // Split Współżędne (index 2) into Latitude and Longitude
-            if (isset($row[2])) {
-                $coords = explode(',', $row[2]);
-                $lat = isset($coords[0]) ? mb_trim($coords[0]) : '';
-                $lng = isset($coords[1]) ? mb_trim($coords[1]) : '';
-
-                // Replace index 2 with lat and insert lng at index 3
-                array_splice($row, 2, 1, [$lat, $lng]);
-            }
-
-            $data[] = $row;
+            fclose($handle);
         }
 
-        return $data;
+        $this->info('Processed ' . count($data) . ' rows.');
+
+        $this->info('Saving data to database...');
+        $this->saveToDatabase($data);
+        $this->info('Data saved to database.');
+
+        return 0;
     }
 
     private function saveToDatabase(array $data): void

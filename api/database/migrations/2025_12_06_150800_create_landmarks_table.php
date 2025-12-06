@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string('name');
             $table->string('localization_name');
             $table->text('description');
-            $table->decimal('latitude', 10, 8);
-            $table->decimal('longitude', 11, 8);
+            $table->decimal('latitude', 3, 14);
+            $table->decimal('longitude', 3, 14);
             $table->string('thumbnail_url');
             $table->string('map_url');
             $table->timestamps();
