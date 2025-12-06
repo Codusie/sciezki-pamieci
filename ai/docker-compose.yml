@@ -1,9 +1,16 @@
 services:
+  #if you want to use ollama as LLM provider, uncomment this service
+  #ollama:
+  #  image: ollama/ollama
+  #  ports:
+  #    - "11434:11434"
   ai:
     build: .
     container_name: bydgoszcz-ai-test
     ports:
       - "5000:5000"
+    #depends_on:
+    #  - ollama
     env_file:
       - .env
     environment:
@@ -13,6 +20,8 @@ services:
       - FLASK_ENV=production
       - MAX_TOKENS=${MAX_TOKENS}
       - TEMPERATURE=${TEMPERATURE}
+      #- OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_BASE_URL=http://ollama:11434
     
     restart: unless-stopped
     healthcheck:
@@ -26,3 +35,5 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+    #extra_hosts:
+    #  - "host.docker.internal:host-gateway"
