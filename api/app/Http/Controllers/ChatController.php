@@ -45,8 +45,6 @@ final class ChatController
         //     'sender' => CharMessageSender::Agent,
         //     'message' => $reply,
         // ]);
-
-        
     }
 
     public function sendMessage(Landmark $landmark): ChatResponseResource

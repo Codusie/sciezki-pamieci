@@ -6,8 +6,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\VisitStoreRequest;
 use App\Models\Visit;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class VisitController

@@ -19,11 +19,12 @@ it('stores a visit on POST /api/visits', function (): void {
         'landmark_id' => $landmark->id,
     ]);
 
-    $response->assertNoContent();
+    $response->assertOk();
 
     $this->assertDatabaseHas('visits', [
         'user_id' => $user->id,
         'landmark_id' => $landmark->id,
+        'team' => $user->team,
     ]);
 });
 
@@ -111,7 +112,7 @@ it('blocks duplicate visits to the same landmark with 406', function (): void {
     $first = $this->withToken($token)->postJson('/api/visits', [
         'landmark_id' => $landmark->id,
     ]);
-    $first->assertNoContent();
+    $first->assertOk();
 
     $second = $this->withToken($token)->postJson('/api/visits', [
         'landmark_id' => $landmark->id,

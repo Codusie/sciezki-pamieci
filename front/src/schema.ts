@@ -4,6 +4,38 @@
  */
 
 export interface paths {
+    "/chats/{landmark}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["chat.showHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/chats/{landmark}/message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["chat.sendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/landmarks": {
         parameters: {
             query?: never;
@@ -29,6 +61,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["reel.index"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["team.index"];
         put?: never;
         post?: never;
         delete?: never;
@@ -73,6 +121,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ChatResponseResource */
+        ChatResponseResource: {
+            sender: string;
+            message: string;
+        };
         /** Landmark */
         Landmark: {
             id: number;
@@ -172,6 +225,60 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    "chat.showHistory": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landmark ID */
+                landmark: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Array of items */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string[];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "chat.sendMessage": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description The landmark ID */
+                landmark: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description `ChatResponseResource` */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ChatResponseResource"];
+                    };
+                };
+            };
+            401: components["responses"]["AuthenticationException"];
+            404: components["responses"]["ModelNotFoundException"];
+        };
+    };
     "landmark.index": {
         parameters: {
             query?: never;
@@ -212,6 +319,30 @@ export interface operations {
                 };
             };
             404: components["responses"]["ModelNotFoundException"];
+        };
+    };
+    "team.index": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": [
+                        {
+                            key: string;
+                            visits: number;
+                        }
+                    ];
+                };
+            };
         };
     };
     "user.store": {
@@ -297,23 +428,38 @@ export interface operations {
             };
         };
         responses: {
-            /** @description No content */
-            204: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        message: PathsVisitsPostResponses200ContentApplicationJsonMessage;
+                    };
+                };
             };
             401: components["responses"]["AuthenticationException"];
             406: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": {
+                        /** @enum {string} */
+                        error: PathsVisitsPostResponses406ContentApplicationJsonError;
+                    };
+                };
             };
             422: components["responses"]["ValidationException"];
         };
     };
+}
+export enum PathsVisitsPostResponses200ContentApplicationJsonMessage {
+    Visit_created_successfully_ = "Visit created successfully."
+}
+export enum PathsVisitsPostResponses406ContentApplicationJsonError {
+    You_have_already_visited_this_landmark_ = "You have already visited this landmark."
 }
 export enum Team {
     twardowski = "twardowski",

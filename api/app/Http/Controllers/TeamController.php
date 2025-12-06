@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserStoreRequest;
-use App\Models\Visit;
 use App\Enums\Team;
+use App\Models\Visit;
 
 final class TeamController
 {
     public function index(): array
-    {   
+    {
         $teams = [];
 
         foreach (Team::cases() as $team) {

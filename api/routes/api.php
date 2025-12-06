@@ -5,9 +5,9 @@ declare(strict_types=1);
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\LandmarkController;
 use App\Http\Controllers\ReelController;
+use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitController;
-use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/users', [UserController::class, 'store']);
