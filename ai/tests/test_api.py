@@ -6,6 +6,7 @@ Tests core functionality without requiring OpenAI API calls
 import unittest
 import json
 from unittest.mock import patch, MagicMock
+import pandas as pd
 
 from src.document_store import DocumentStore
 from src.session_manager import SessionManager
@@ -17,13 +18,13 @@ class TestDocumentStore(unittest.TestCase):
     
     def setUp(self):
         self.store = DocumentStore()
-        self.store.add_document("Test Landmark", "This is a test document about architecture and history")
-        self.store.add_document("Another Place", "This discusses cultural heritage and local traditions")
-    
-    def test_add_document(self):
+        self.store.add_documents('data/landmarks.csv')
+
+    def test_add_documents(self):
         """Test adding documents"""
+        no_docs = len(pd.read_csv('data/landmarks.csv'))
         self.assertIn("Test Landmark", self.store.documents)
-        self.assertEqual(len(self.store.documents), 2)
+        self.assertEqual(len(self.store.documents), no_docs)
     
     def test_get_document(self):
         """Test retrieving a document"""

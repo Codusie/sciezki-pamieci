@@ -39,8 +39,8 @@ services:
       - GEMINI_API_KEY=${GEMINI_API_KEY}
       - DEBUG=false
       - FLASK_ENV=production
-      - MAX_TOKENS=1000
-      - TEMPERATURE=0.5
+      - MAX_TOKENS=${MAX_TOKENS}
+      - TEMPERATURE=${TEMPERATURE}
     
     restart: unless-stopped
     healthcheck:

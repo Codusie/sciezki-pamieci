@@ -4,6 +4,8 @@ python-dotenv
 numpy
 scikit-learn
 requests
+gunicorn
+pandas
 
 # LLM Providers (install as needed for your use case)
 # OpenAI / GPT models
@@ -18,4 +20,3 @@ anthropic
 # Ollama is accessed via HTTP API (requests already included above)
 
 
-gunicorn

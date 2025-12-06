@@ -13,7 +13,6 @@ from config.config import config
 from src.document_store import document_store
 from src.session_manager import session_manager
 from src.llm_client import generate_landmark_response, LLMClient
-from src.sample_documents import SAMPLE_DOCUMENTS
 
 
 # Configure logging
@@ -36,8 +35,8 @@ def create_app():
         raise
     
     # Load sample documents on startup
-    document_store.add_documents(SAMPLE_DOCUMENTS)
-    logger.info(f"Loaded {len(SAMPLE_DOCUMENTS)} landmark documents")
+    document_store.add_documents('data/landmarks.csv', 'data/historical_info.txt')
+    logger.info(f"Loaded {len(document_store.documents)} documents")
     
     # ==================== ROUTES ====================
     
@@ -51,16 +50,6 @@ def create_app():
         }), 200
     
     
-    @app.route('/landmarks', methods=['GET'])
-    def get_landmarks():
-        """Get list of available landmarks"""
-        landmarks = list(SAMPLE_DOCUMENTS.keys())
-        return jsonify({
-            "landmarks": landmarks,
-            "count": len(landmarks)
-        }), 200
-    
-    
     @app.route('/chat', methods=['POST'])
     def chat():
         """
@@ -68,14 +57,15 @@ def create_app():
         
         Expected JSON payload:
         {
-            "session_id": "optional-session-id",
-            "persona": "tourist type/interests",
+            "session_id": "optional-session-id",     # this is actually user id
+            "persona": "person that is replying",    # "Luczniczka", "Kazimierz Wielki", "Marian Rejewski", "Pan Twardowski"
             "landmark": "landmark name",
-            "query": "user's question"
+            "query": "user's message/query"
         }
         """
         try:
             data = request.get_json()
+            logger.info(f"Received chat request: {data}")
             
             # Validate required fields
             if not data:
@@ -91,27 +81,26 @@ def create_app():
                     "error": "Missing required fields: persona, landmark, query"
                 }), 400
             
-            # Check if landmark exists in our documents
-            if landmark not in SAMPLE_DOCUMENTS:
-                return jsonify({
-                    "error": f"Landmark '{landmark}' not found. Available landmarks: {list(SAMPLE_DOCUMENTS.keys())}"
-                }), 404
-            
             # Create or retrieve session
+            logger.info(f"Creating/retrieving session for ID: {session_id}, persona: {persona}, landmark: {landmark}")
             session = session_manager.create_session(session_id, persona, landmark)
             
             # Retrieve relevant context from documents
-            relevant_context = document_store.retrieve_relevant_context(query, top_k=2)
+            logger.info(f"Retrieving relevant context for query: {query}")
+            relevant_context = document_store.retrieve_relevant_context(query, top_k=3)
             
             if not relevant_context:
+                logger.info(f"No relevant context found for query: {query}")
                 # Fallback to landmark document if no relevant context found
-                landmark_doc = document_store.get_document(landmark)
+                landmark_doc = document_store.get_landmark_description(landmark)
                 relevant_context = [(landmark, landmark_doc, 1.0)] if landmark_doc else []
             
             # Get conversation history
+            logger.info(f"Fetching conversation history for session ID: {session.session_id}")
             conversation_history = session.get_history()
             
             # Generate response
+            logger.info(f"Generating response for persona: {persona}, landmark: {landmark}")
             response_text = generate_landmark_response(
                 session_data={
                     "persona": persona,
@@ -121,7 +110,9 @@ def create_app():
                 relevant_context=relevant_context,
                 conversation_history=conversation_history
             )
-            
+            if response_text is None:
+                response_text = "Przepraszam, nie mogę teraz odpowiedzieć na to pytanie."
+            logger.info(f"Generated response: {response_text}")
             # Store messages in session
             session.add_message("user", query)
             session.add_message("assistant", response_text)
@@ -168,49 +159,14 @@ def create_app():
             return jsonify({"error": f"Error retrieving session: {str(e)}"}), 500
     
     
-    @app.route('/session/<session_id>', methods=['DELETE'])
-    def delete_session(session_id):
-        """Delete a session"""
-        try:
-            if session_manager.remove_session(session_id):
-                return jsonify({
-                    "message": f"Session {session_id} deleted successfully"
-                }), 200
-            else:
-                return jsonify({
-                    "error": f"Session {session_id} not found"
-                }), 404
-        
-        except Exception as e:
-            logger.error(f"Error deleting session: {str(e)}")
-            return jsonify({"error": f"Error deleting session: {str(e)}"}), 500
-    
-    
-    @app.route('/sessions/cleanup', methods=['POST'])
-    def cleanup_sessions():
-        """Clean up inactive sessions"""
-        try:
-            timeout = request.json.get("timeout_minutes", 30) if request.json else 30
-            removed_count = session_manager.cleanup_inactive_sessions(timeout)
-            
-            return jsonify({
-                "message": f"Cleaned up {removed_count} inactive sessions",
-                "timeout_minutes": timeout,
-                "active_sessions_remaining": session_manager.get_active_sessions_count()
-            }), 200
-        
-        except Exception as e:
-            logger.error(f"Error cleaning up sessions: {str(e)}")
-            return jsonify({"error": f"Error cleaning up sessions: {str(e)}"}), 500
-    
-    
     @app.route('/stats', methods=['GET'])
-    def get_stats():
+    def get_stats(self):
         """Get API statistics"""
         return jsonify({
             "active_sessions": session_manager.get_active_sessions_count(),
-            "total_landmarks": len(SAMPLE_DOCUMENTS),
-            "available_landmarks": list(SAMPLE_DOCUMENTS.keys()),
+            "total_landmarks": len(document_store.landmarks),
+            "total_historical_info": len(document_store.historical_info),
+            "total_docs": len(document_store.documents ),
             "api_version": "1.0.0",
             "timestamp": datetime.now().isoformat()
         }), 200

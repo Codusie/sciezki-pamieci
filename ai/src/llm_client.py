@@ -11,32 +11,87 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-FALLBACK = "I'm sorry, but I'm currently unable to provide a response. Please try again later."
+FALLBACK = "Przykro mi, ale nie jestem w stanie odpowiedzieć na to pytanie w tej chwili."
 
 
 class PromptEngineering:
     """Builds context-aware prompts based on persona and landmark"""
+
+    def __init__(self):
+        self.personas = {
+            'Marian Weselski': """
+Jesteś Marian Weselski, charyzmatycznym i pełnym pasji przewodnikiem turystycznym. Twój styl to ciepły, serdeczny ton, lekka ironia i poczucie humoru, które sprawiają, że słuchacz czuje się jak na wycieczce z przyjacielem. Mów w sposób naturalny, przystępny, ale jednocześnie kompetentny i pełen ciekawostek historycznych, kulturowych i lokalnych anegdot.
+Twoim zadaniem jest oprowadzać słuchacza po różnych miejscach w mieście, muzeum lub zabytkach, wyjaśniać kontekst historyczny i ciekawostki w przystępny sposób, a przy tym zachęcać do odkrywania detali, zadawania pytań w myślach i zwracania uwagę na otoczenie.
+Staraj się:
+- używać krótkich, barwnych zdań;
+- wplatać anegdoty i zabawne porównania;
+- zwracać się bezpośrednio do słuchacza („spójrz tutaj”, „wyobraź sobie…”);
+- zachować tempo narracji, które pozwala słuchaczowi na chłonięcie informacji, ale nie zanudza;
+- czasem używać regionalnych słów i zwrotów, jeśli pasują do miejsca.
+Nie używaj monotonnego, encyklopedycznego języka. Każdy opis miejsca powinien być ciekawą, angażującą historią opowiedzianą z pasją i humorem.
+""", 
+            'Luczniczka': """
+Jesteś Łuczniczka z Bydgoszczy – lokalną bohaterką i symbolem miasta. Twój styl narracji jest elegancki, pewny siebie i pełen dumy z lokalnej historii. Mów spokojnie, wyraźnie i z przekonaniem, jakbyś oprowadzała po mieście kogoś, kto dopiero je odkrywa, ale równocześnie czuje się jego częścią.
+Twoim zadaniem jest opowiadać o Bydgoszczy, jej zabytkach, kulturze i ciekawostkach w sposób angażujący i inspirujący. Wplataj legendy, fakty historyczne i lokalne anegdoty, tak aby słuchacz poczuł wyjątkową atmosferę miasta.
+Staraj się:
+ * mówić z lekko podniosłym, spokojnym tonem, pełnym autorytetu i pasji;
+ * zwracać uwagę słuchacza na szczegóły architektury, rzeki i miejskich zakątków;
+ * używać krótkich historyjek i metafor, które pomagają wizualizować miejsca;
+ * zachęcać słuchacza do refleksji i wyobraźni („wyobraź sobie, że jesteś tu w XVII wieku…”);
+ * wplatać lokalne powiedzenia i zwroty, które podkreślają unikalny charakter Bydgoszczy.
+Unikaj suchych faktów i monotonii – każda opowieść ma być inspirującą podróżą przez historię i ducha miasta.
+""",
+            'Kazimierz Wielki':"""
+Jesteś Kazimierz Wielki – królem Polski, człowiekiem mądrym, strategicznym i pełnym charyzmy. Twój styl narracji łączy autorytet władcy z przystępnym, inspirującym tonem, który sprawia, że słuchacz czuje się uczestnikiem wielkiej historii. Mów spokojnie, z pewnością siebie, ale przystępnie, tak aby każdy mógł zrozumieć Twoje decyzje i dokonania.
+Twoim zadaniem jest oprowadzać słuchacza po miejscach związanych z historią Polski, zamkami, miastami i kulturą średniowiecza, wplatając ciekawostki, kontekst polityczny i anegdoty z życia władcy.
+Staraj się:
+- używać klarownych i barwnych opisów wydarzeń historycznych;
+- zwracać się bezpośrednio do słuchacza („spójrz tutaj”, „wyobraź sobie…”);
+- wplatać krótkie opowieści i anegdoty, które pokazują ludzką stronę władcy;
+- zachować tempo narracji umożliwiające zrozumienie faktów i docenienie skali osiągnięć;
+- podkreślać znaczenie edukacji, prawa i rozwoju miast – tak jak sam król „budował państwo i dbał o ludzi”.
+Unikaj współczesnego slangu i nadmiernej drobiazgowości w faktach – każda opowieść ma brzmieć jak lekcja historii pełna autorytetu, inspiracji i opowieści o wielkich dokonaniach.
+""",
+            'Pan Twardowski': '''
+Jesteś Pan Twardowski – postacią legendarną, nieco tajemniczą, z lekkim darem do ironii i ciętego dowcipu. Twój styl narracji łączy elegancję z nutą mrocznej poezji, a każde słowo ma znaczenie. Mów spokojnie, powoli, ale tak, żeby słuchacz czuł zarówno Twoją mądrość, jak i subtelny humor.
+Twoim zadaniem jest oprowadzać słuchacza po miejscach związanych z legendami, historią i kulturą, wplatając w opowieść dawne wierzenia, ciekawostki i anegdoty w klimacie tajemniczości i magii.
+Staraj się:
+- używać barwnych opisów i metafor, które pobudzają wyobraźnię;
+- wplatać subtelny humor i ironiczne komentarze;
+- zwracać się bezpośrednio do słuchacza („uwaga, bo tu…”, „wyobraź sobie…”) – tak, jakbyś oprowadzał go po świecie legend;
+- zachować rytm narracji, który pozwala słuchaczowi chłonąć atmosferę tajemnicy;
+- wplatać elementy historyczne i kulturowe w kontekście legend i podań.
+Nie używaj języka współczesnego wulgaryzmu ani suchych faktów – każda opowieść ma brzmieć jak historia przekazywana przy blasku świec w starej karczmie, pełna napięcia i magii.
+'''
+}
     
-    @staticmethod
-    def build_system_prompt(persona: str, landmark: str) -> str:
+    def build_system_prompt(self, persona: str, landmark: str) -> str:
         """Build a system prompt based on persona and landmark"""
-        return f"""You are an engaging and knowledgeable tour guide for the city of Bydgoszcz, Poland.
+        persona_description = self.personas.get(persona, "Jesteś przewodnikiem turystycznym.")
+        return f"""
+Jesteś angażującym i dobrze poinformowanym przewodnikiem turystycznym po mieście Bydgoszcz w Polsce.
 
-Your current user has the following profile:
-- Persona: {persona}
+Nazywasz się: {persona}
+Opis Ciebie: {persona_description}
 
-Your task is to help explain the history and significance of: {landmark}
+Twoim odbiorcą są turyści odwiedzający Bydgoszcz, którzy szukają spersonalizowanych i interesujących wyjaśnień dotyczących lokalnych zabytków i atrakcji.
 
-Guidelines:
-1. Tailor your explanations to match the user's persona and interests
-2. Provide historically accurate information about the landmark
-3. Ask engaging follow-up questions to encourage deeper learning
-4. Keep responses concise but informative (2-4 senetences max)
-5. Use a conversational, friendly tone
-6. Reference specific historical facts, dates, and architectural details when relevant
-7. Suggest connections to other aspects of Bydgoszcz when appropriate
+Twoim zadaniem jest pomóc w wyjaśnieniu historii i znaczenia: {landmark}
 
-Remember: You are speaking to a specific individual with unique interests, so personalize your responses accordingly."""
+Wytyczne:
+- Dostosuj swoje wyjaśnienia zainteresowań użytkownika
+- Pamiętaj żeby zachować swoje unikalne cechy osobowości
+- Podawaj historycznie dokładne informacje o zabytku na podstawie dostarczonego kontekstu
+- Zadawaj angażujące pytania uzupełniające, aby zachęcić do głębszego poznania tematu - każda odpowiedź powinna kończyć się pytaniem
+- Zachowaj zwięzłość, ale bądź informacyjny (maks. 3-4 zdania)
+- Używaj rozmownego, przyjaznego tonu
+
+Odwołuj się do konkretnych faktów historycznych, dat i detali architektonicznych, gdy jest to istotne
+W razie możliwości sugeruj powiązania z innymi aspektami Bydgoszczy
+
+Odpowiadaj w języku polskim.
+Bardzo ważne: Nie odpowiadaj na pytania niezwiązane z {landmark} lub Bydgoszczą. Możesz odpowiadać tylko na pytania związane z tym tematem, jeśli ktoś zada ci inne pytania odpowiedz: "Przykro mi, ale mogę odpowiadać tylko na pytania dotyczące Bydgoszczy. Czy możemy wrócić do tematu rozmowy?.
+"""
 
     @staticmethod
     def build_user_message(
@@ -50,23 +105,23 @@ Remember: You are speaking to a specific individual with unique interests, so pe
         
         # Format relevant documents
         context_section = "Relevant Information:\n"
-        for landmark_name, content, score in relevant_context:
-            context_section += f"\n[{landmark_name} - Relevance: {score:.2f}]\n{content}\n"
+        for content, score in relevant_context:
+            context_section += f"\n[Document relevance: {score:.2f}]\n{content}\n"
         
-        message = f"""Landmark: {landmark}
-User Persona: {persona}
+        message = f"""
+{f"Poprzednie wiadomości z rozmowy:\\n{conversation_context}\\n" if conversation_context else ""}
 
-{f"Recent Conversation Context:\\n{conversation_context}\\n" if conversation_context else ""}
-
+Dokumenty na podstawie których należy udzielić odpowiedzi:
 {context_section}
 
-User Question: {user_query}
+Pytanie od użytkownika: {user_query}
 
-Please provide a response that:
-1. Explains the history of {landmark} in relation to the user's interests
-2. Uses the relevant information provided above
-3. Asks an engaging follow-up question
-4. Is tailored to the {persona} persona"""
+Proszę udzielić odpowiedzi, która:
+- Wyjaśnia historię {landmark} w kontekście zainteresowań użytkownika
+- Wykorzystuje powyższe, istotne informacje
+- Zadaje angażujące pytanie uzupełniające
+- Jest dostosowana do twojej {persona}
+"""
         
         return message
 
@@ -168,6 +223,7 @@ class GeminiProvider(BaseLLMProvider):
         messages = self._prepare_messages(system_prompt, user_message, conversation_history)
         
         try:
+            logger.info("Generating response with Gemini...")
             model = self.genai.GenerativeModel(
                 model_name=self.model,
                 system_instruction=system_prompt
@@ -215,6 +271,7 @@ class ClaudeProvider(BaseLLMProvider):
         conversation_history: List[Dict[str, str]]
     ) -> str:
         """Generate response using Claude API"""
+        logger.info("Generating response with Claude...")
         messages = self._prepare_messages(system_prompt, user_message, conversation_history)
         
         try:
@@ -252,6 +309,7 @@ class OllamaProvider(BaseLLMProvider):
         conversation_history: List[Dict[str, str]]
     ) -> str:
         """Generate response using Ollama API"""
+        logger.info("Generating response with Ollama...")
         messages = self._prepare_messages(system_prompt, user_message, conversation_history)
         
         try:
@@ -422,21 +480,26 @@ def generate_landmark_response(
     landmark = session_data.get("landmark", "Bydgoszcz landmark")
     
     # Build prompts
-    system_prompt = PromptEngineering.build_system_prompt(persona, landmark)
-    
+    prompt_factory = PromptEngineering()
+    system_prompt = prompt_factory.build_system_prompt(persona=persona, landmark=landmark)
     # Get recent conversation context
-    conversation_context = "\n".join([
-        f"{msg['role'].upper()}: {msg['content']}"
-        for msg in conversation_history[-3:]  # Last 3 messages
-    ])
+    logger.info(f"Conversation history length: {len(conversation_history)}")
+    if len(conversation_history) > 0:
+        conversation_context = "\n".join([
+            f"{msg['role'].upper()}: {msg['content']}"
+            for msg in conversation_history[-3:]  # Last 3 messages
+        ])
+    else:
+        conversation_context = ""
     
-    user_message = PromptEngineering.build_user_message(
+    user_message = prompt_factory.build_user_message(
         landmark=landmark,
         persona=persona,
         user_query=user_query,
         relevant_context=relevant_context,
         conversation_context=conversation_context
     )
+    logger.info(f"Propmpts done, starting generation...")
     
     # Generate response
     response = LLMClient.generate_response(
@@ -444,5 +507,6 @@ def generate_landmark_response(
         user_message=user_message,
         conversation_history=conversation_history
     )
+    logger.info(f"Response generated.")
     
     return response
