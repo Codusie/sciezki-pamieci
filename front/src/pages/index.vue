@@ -1,7 +1,12 @@
 <template>
   <Layout>
     <div class="map-view">
-      <Map class="map-view__map">
+      <Map
+        class="map-view__map"
+        v-bind="locatedAt ? { center: [coords.latitude, coords.longitude] } : undefined"
+      >
+        <LCircleMarker v-if="coords" :lat-lng="[coords.latitude, coords.longitude]" :radius="10" />
+
         <MapMarker
           v-for="mark in data"
           :key="mark.id"
@@ -18,7 +23,9 @@ import { httpService } from '@/api'
 import Layout from '@/components/Layout.vue'
 import Map from '@/components/Map.vue'
 import MapMarker from '@/components/MapMarker.vue'
-import { useQuery } from '@tanstack/vue-query'
+import { keepPreviousData, useQuery } from '@tanstack/vue-query'
+import { useGeolocation } from '@vueuse/core'
+import { LCircleMarker } from '@vue-leaflet/vue-leaflet'
 
 const { data } = useQuery({
   queryKey: ['get-landmarks'],
@@ -26,6 +33,12 @@ const { data } = useQuery({
     const { data } = await httpService.GET('/landmarks')
     return data
   },
+  placeholderData: keepPreviousData,
+})
+
+const { coords, locatedAt } = useGeolocation({
+  enableHighAccuracy: true,
+  immediate: true,
 })
 </script>
 
