@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'klisza.app'),
+    'name' => env('APP_NAME', 'Podbij Bydgoszcz'),
 
     /*
     |--------------------------------------------------------------------------

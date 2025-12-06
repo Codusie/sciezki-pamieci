@@ -29,7 +29,7 @@ it('stores a visit on POST /api/visits', function (): void {
 
 it('lists authenticated user visits on GET /api/visits', function (): void {
     $user = User::create([
-        'team' => Team::Luczniczka->value,
+        'team' => Team::Twardowski->value,
     ]);
 
     $token = $user->createToken('test')->plainTextToken;

@@ -8,6 +8,8 @@ const authMiddleware: Middleware = {
   async onRequest({ request }) {
     const { accessToken } = useAuthStore()
 
+    request.headers.set('Accept', 'application/json')
+
     // add Authorization header to every request
     if (accessToken) request.headers.set('Authorization', `Bearer ${accessToken}`)
     return request

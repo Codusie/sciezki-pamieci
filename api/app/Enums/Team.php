@@ -7,6 +7,6 @@ namespace App\Enums;
 enum Team: string
 {
     case Twardowski = 'twardowski';
-    case Luczniczka = 'luczniczka';
     case Rejewski = 'rejewski';
+    case KazimierzWielki = 'kazimierz_wielki';
 }

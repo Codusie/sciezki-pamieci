@@ -316,6 +316,6 @@ export interface operations {
 }
 export enum Team {
     twardowski = "twardowski",
-    luczniczka = "luczniczka",
-    rejewski = "rejewski"
+    rejewski = "rejewski",
+    kazimierz_wielki = "kazimierz_wielki"
 }

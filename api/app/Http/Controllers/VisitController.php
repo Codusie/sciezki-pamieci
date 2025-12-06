@@ -35,6 +35,6 @@ final class VisitController
      */
     public function index(Request $request): LengthAwarePaginator
     {
-        return $request->user()->visits()->paginate();
+        return $request->user()->visits()->with('landmark')->paginate();
     }
 }
