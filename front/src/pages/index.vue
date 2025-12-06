@@ -10,6 +10,7 @@
         <MapMarker
           v-for="mark in data"
           :key="mark.id"
+          :id="mark.id"
           :lat-lng="[Number(mark.latitude), Number(mark.longitude)]"
           :image-url="mark.thumbnail_url"
         />
@@ -19,22 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { httpService } from '@/api'
 import Layout from '@/components/Layout.vue'
 import Map from '@/components/Map.vue'
 import MapMarker from '@/components/MapMarker.vue'
-import { keepPreviousData, useQuery } from '@tanstack/vue-query'
 import { useGeolocation } from '@vueuse/core'
 import { LCircleMarker } from '@vue-leaflet/vue-leaflet'
+import { useLandmarks } from '@/composables/useLandmarks'
 
-const { data } = useQuery({
-  queryKey: ['get-landmarks'],
-  queryFn: async () => {
-    const { data } = await httpService.GET('/landmarks')
-    return data
-  },
-  placeholderData: keepPreviousData,
-})
+const { data } = useLandmarks()
 
 const { coords, locatedAt } = useGeolocation({
   enableHighAccuracy: true,

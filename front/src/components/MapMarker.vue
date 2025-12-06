@@ -1,5 +1,5 @@
 <template>
-  <LMarker :lat-lng="latLng">
+  <LMarker :lat-lng="latLng" @click="onClick">
     <LIcon>
       <img class="marker-icon" :src="imageUrl" :alt="`TODO`" />
     </LIcon>
@@ -8,11 +8,19 @@
 
 <script setup lang="ts">
 import { LMarker, LIcon } from '@vue-leaflet/vue-leaflet'
+import { useRouter } from 'vue-router'
 
-const { latLng, imageUrl } = defineProps<{
+const { id, latLng, imageUrl } = defineProps<{
+  id: number
   latLng: [number, number]
   imageUrl: string
 }>()
+
+const router = useRouter()
+
+const onClick = () => {
+  router.push({ name: 'landmark-view', params: { landmarkId: id } })
+}
 </script>
 
 <style lang="scss">
