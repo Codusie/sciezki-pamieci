@@ -7,10 +7,12 @@ use App\Http\Controllers\LandmarkController;
 use App\Http\Controllers\ReelController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VisitController;
+use App\Http\Controllers\TeamController;
 use Illuminate\Support\Facades\Route;
 
-// User authentication
 Route::post('/users', [UserController::class, 'store']);
+
+Route::get('/teams', [TeamController::class, 'index']);
 
 Route::get('/landmarks', [LandmarkController::class, 'index']);
 Route::get('/landmarks/{landmark}/reels', [ReelController::class, 'index']);

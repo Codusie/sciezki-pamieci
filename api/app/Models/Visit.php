@@ -20,15 +20,6 @@ final class Visit extends Model
         'team' => Team::class,
     ];
 
-    protected static function booted(): void
-    {
-        self::creating(function (Visit $visit): void {
-            if (!$visit->team && $visit->user) {
-                $visit->team = $visit->user->team;
-            }
-        });
-    }
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

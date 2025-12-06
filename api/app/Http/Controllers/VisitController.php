@@ -7,12 +7,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\VisitStoreRequest;
 use App\Models\Visit;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class VisitController
 {
-    public function store(VisitStoreRequest $request): Response
+    public function store(VisitStoreRequest $request): JsonResponse
     {
         $alreadyVisited = $request->user()
             ->visits()
@@ -20,7 +20,9 @@ final class VisitController
             ->exists();
 
         if ($alreadyVisited) {
-            return response()->noContent(406);
+            return response()->json([
+                'error' => 'You have already visited this landmark.',
+            ], 406);
         }
 
         $request->user()->visits()->create([
@@ -28,7 +30,9 @@ final class VisitController
             'team' => $request->user()->team,
         ]);
 
-        return response()->noContent();
+        return response()->json([
+            'message' => 'Visit created successfully.',
+        ]);
     }
 
     /**
