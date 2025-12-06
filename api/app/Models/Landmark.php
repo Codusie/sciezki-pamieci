@@ -31,4 +31,9 @@ final class Landmark extends Model
     {
         return $this->hasMany(Reel::class);
     }
+
+    public function visits(): HasMany
+    {
+        return $this->hasMany(Visit::class);
+    }
 }

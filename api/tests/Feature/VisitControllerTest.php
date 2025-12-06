@@ -36,15 +36,26 @@ it('lists authenticated user visits on GET /api/visits', function (): void {
 
     $landmarks = Landmark::factory()->count(2)->create();
 
-    $user->visits()->create(['landmark_id' => $landmarks[0]->id]);
-    $user->visits()->create(['landmark_id' => $landmarks[1]->id]);
-    $user->visits()->create(['landmark_id' => $landmarks[0]->id]);
+    $user->visits()->create([
+        'team' => Team::Twardowski->value,
+        'landmark_id' => $landmarks[0]->id]);
+    $user->visits()->create([
+        'team' => Team::Twardowski->value,
+        'landmark_id' => $landmarks[1]->id,
+    ]);
+    $user->visits()->create([
+        'team' => Team::Twardowski->value,
+        'landmark_id' => $landmarks[0]->id,
+    ]);
 
     $other = User::create([
         'team' => Team::Rejewski->value,
     ]);
     $other->createToken('other')->plainTextToken;
-    $other->visits()->create(['landmark_id' => $landmarks[0]->id]);
+    $other->visits()->create([
+        'team' => Team::Rejewski->value,
+        'landmark_id' => $landmarks[0]->id,
+    ]);
 
     $response = $this->withToken($token)->getJson('/api/visits');
 

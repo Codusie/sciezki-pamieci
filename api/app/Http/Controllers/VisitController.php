@@ -25,6 +25,7 @@ final class VisitController
 
         $request->user()->visits()->create([
             'landmark_id' => $request->landmark_id,
+            'team' => $request->user()->team,
         ]);
 
         return response()->noContent();

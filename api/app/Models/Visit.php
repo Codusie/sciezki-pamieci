@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\Team;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,7 +13,21 @@ final class Visit extends Model
     protected $fillable = [
         'user_id',
         'landmark_id',
+        'team',
     ];
+
+    protected $casts = [
+        'team' => Team::class,
+    ];
+
+    protected static function booted(): void
+    {
+        self::creating(function (Visit $visit): void {
+            if (!$visit->team && $visit->user) {
+                $visit->team = $visit->user->team;
+            }
+        });
+    }
 
     public function user(): BelongsTo
     {

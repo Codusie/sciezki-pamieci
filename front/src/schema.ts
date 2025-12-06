@@ -112,6 +112,7 @@ export interface components {
             id: number;
             user_id: number;
             landmark_id: number;
+            team: components["schemas"]["Team"];
             /** Format: date-time */
             created_at: string | null;
             /** Format: date-time */
