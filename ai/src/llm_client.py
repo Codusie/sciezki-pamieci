@@ -174,9 +174,8 @@ class OpenAIProvider(BaseLLMProvider):
     def __init__(self, model: str, temperature: float, max_tokens: int, api_key: str):
         super().__init__(model, temperature, max_tokens)
         try:
-            import openai
-            self.openai = openai
-            self.openai.api_key = api_key
+            from openai import OpenAI
+            self.client = OpenAI(api_key=config.OPENAI_API_KEY)
         except ImportError:
             raise ImportError("openai package required for OpenAI models. Install with: pip install openai")
     
@@ -190,13 +189,13 @@ class OpenAIProvider(BaseLLMProvider):
         messages = self._prepare_messages(system_prompt, user_message, conversation_history)
         
         try:
-            response = self.openai.ChatCompletion.create(
+            response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
                 temperature=self.temperature,
                 max_tokens=self.max_tokens
             )
-            return response["choices"][0]["message"]["content"]
+            return response.choices[0].message.content
         except Exception as e:
             raise Exception(f"OpenAI API error: {str(e)}")
 
