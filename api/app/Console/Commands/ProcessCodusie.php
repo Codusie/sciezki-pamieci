@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
+use App\Models\Landmark;
 use Exception;
 use Illuminate\Console\Command;
-use App\Models\Landmark;
 
-class ProcessCodusie extends Command
+final class ProcessCodusie extends Command
 {
     /**
      * The name and signature of the console command.
@@ -31,7 +31,7 @@ class ProcessCodusie extends Command
     {
         try {
             $content = $this->readCsv(base_path('codusie.csv'));
-            
+
             $this->info('Reading CSV file...');
             $data = $this->transformCsv($content);
             $this->info('Processed ' . count($data) . ' rows.');
@@ -41,6 +41,7 @@ class ProcessCodusie extends Command
             $this->info('Data saved to database.');
         } catch (Exception $e) {
             $this->error($e->getMessage());
+
             return 1;
         }
 
@@ -58,10 +59,7 @@ class ProcessCodusie extends Command
     }
 
     /**
-     * Transform CSV content into array
-     * 
-     * @param string $content
-     * @return array
+     * Transform CSV content into array.
      */
     private function transformCsv(string $content): array
     {
@@ -71,7 +69,7 @@ class ProcessCodusie extends Command
         $data = [];
         foreach ($lines as $line) {
             // Skip empty lines (e.g. trailing newline)
-            if (trim($line) === '') {
+            if (mb_trim($line) === '') {
                 continue;
             }
 
@@ -85,9 +83,9 @@ class ProcessCodusie extends Command
             // Split Współżędne (index 2) into Latitude and Longitude
             if (isset($row[2])) {
                 $coords = explode(',', $row[2]);
-                $lat = isset($coords[0]) ? trim($coords[0]) : '';
-                $lng = isset($coords[1]) ? trim($coords[1]) : '';
-                
+                $lat = isset($coords[0]) ? mb_trim($coords[0]) : '';
+                $lng = isset($coords[1]) ? mb_trim($coords[1]) : '';
+
                 // Replace index 2 with lat and insert lng at index 3
                 array_splice($row, 2, 1, [$lat, $lng]);
             }
@@ -112,5 +110,4 @@ class ProcessCodusie extends Command
             ]);
         }
     }
-    
 }

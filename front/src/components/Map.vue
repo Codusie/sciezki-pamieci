@@ -20,29 +20,27 @@
       />
       <LControlZoom position="topright" />
       <LControl position="bottomright">
-        <div
-          class="absolute right-0 bottom-0 text-nowrap px-2 py-0.5 rounded-full bg-[var(--ui-bg)] text-gray-500 font-sans"
+      <div class="map__attribution">
+        &copy;
+        <a
+          href="https://www.openstreetmap.org/copyright"
+          target="_blank"
+          rel="nofollow noopener"
+          class="map__attribution-link"
         >
-          &copy;
-          <a
-            href="https://www.openstreetmap.org/copyright"
-            target="_blank"
-            rel="nofollow noopener"
-            class="text-neutral-600 dark:text-neutral-300 hover:underline"
-          >
-            OpenStreetMap
-          </a>
-          |
-          <a
-            href="https://leafletjs.com"
-            target="_blank"
-            rel="nofollow noopener"
-            class="text-neutral-600 dark:text-neutral-300 hover:underline"
-          >
-            Leaflet
-          </a>
-        </div>
-      </LControl>
+          OpenStreetMap
+        </a>
+        |
+        <a
+          href="https://leafletjs.com"
+          target="_blank"
+          rel="nofollow noopener"
+          class="map__attribution-link"
+        >
+          Leaflet
+        </a>
+      </div>
+    </LControl>
 
       <slot></slot>
     </LMap>
@@ -94,6 +92,31 @@ $font-main: 'Inter', sans-serif;
 
   &--rounded {
     border-radius: $border-radius-big;
+  }
+
+  &__attribution {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    white-space: nowrap;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.85);
+    color: #6b7280;
+    font-family: $font-main;
+  }
+
+  &__attribution-link {
+    color: #525252;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    .dark & {
+      color: #d4d4d4;
+    }
   }
 }
 

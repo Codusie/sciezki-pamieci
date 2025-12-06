@@ -45,7 +45,7 @@ const { coords, locatedAt } = useGeolocation({
 <style lang="scss" scoped>
 .map-view {
   width: 100%;
-  height: calc(100% - 46px);
+  height: 100%;
 
   &__map {
     width: 100%;
