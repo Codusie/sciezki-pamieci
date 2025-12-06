@@ -30,7 +30,7 @@ migrate:
 types:
 	docker compose exec api php artisan scramble:export
 	mv ./api/api.json ./front/api.json
-	docker compose exec front bunx openapi-typescript ./api.json -o ./src/schema.d.ts
+	docker compose exec front bunx openapi-typescript ./api.json -o ./src/schema.ts --enum
 
 format:
 	docker compose exec api vendor/bin/pint
