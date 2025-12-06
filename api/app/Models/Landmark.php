@@ -22,6 +22,11 @@ final class Landmark extends Model
         'map_url',
     ];
 
+    protected $casts = [
+        'latitude' => 'string',
+        'longitude' => 'string',
+    ];
+
     public function reels(): HasMany
     {
         return $this->hasMany(Reel::class);
