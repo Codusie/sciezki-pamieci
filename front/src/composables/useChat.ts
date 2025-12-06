@@ -17,7 +17,7 @@ export const useChat = (
     await new Promise((resolve) => setTimeout(resolve, 800))
     isConnected.value = true
 
-    // Add initial picture message with loading
+    // Add initial picture message without loading
     const initialImageMessage: ChatMessage = {
       id: `initial-image-${Date.now()}`,
       author: 'guide',
@@ -25,44 +25,46 @@ export const useChat = (
       message: '',
       image: initialPicture,
       timestamp: new Date(),
-      isLoading: true,
+      isLoading: false,
       type: 'image',
     }
 
     messages.value.push(initialImageMessage)
 
-    // Simulate image loading
+    // Automatically send initial user message (hidden) to trigger guide response
     setTimeout(() => {
-      initialImageMessage.isLoading = false
-    }, 1200)
-
-    // Add initial text message with typing effect
-    setTimeout(() => {
-      const initialTextMessage: ChatMessage = {
-        id: `initial-text-${Date.now()}`,
-        author: 'guide',
-        authorName: guideName,
-        message: '',
-        timestamp: new Date(),
-        isLoading: true,
-        type: 'initial',
-      }
-
-      messages.value.push(initialTextMessage)
-
-      // Simulate typing effect for initial message
-      typeMessage(initialTextMessage, initialMessage)
-    }, 1500)
+      sendInitialMessage(initialMessage)
+    }, 2000)
   }
 
-  const typeMessage = async (messageObj: ChatMessage, fullText: string) => {
-    messageObj.isLoading = false
-    const words = fullText.split(' ')
+  const getMockGuideResponse = () => {
+    return "Thank you for your question! As your guide, I'd be happy to share more details about this fascinating landmark. What specific aspect would you like to explore further?"
+  }
 
-    for (let i = 0; i < words.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 100 + Math.random() * 100))
-      messageObj.message = words.slice(0, i + 1).join(' ')
+  const getInitialGuideResponse = (prompt: string) => {
+    return prompt
+  }
+
+  const sendInitialMessage = async (prompt: string) => {
+    // Show typing indicator for consistent loading state
+    isTyping.value = true
+
+    // Mock API call delay
+    await new Promise((resolve) => setTimeout(resolve, 1500))
+
+    // Send initial guide response based on prompt
+    const guideMessage: ChatMessage = {
+      id: `guide-initial-${Date.now()}`,
+      author: 'guide',
+      authorName: guideName,
+      message: getInitialGuideResponse(prompt),
+      timestamp: new Date(),
+      isLoading: false,
+      type: 'text',
     }
+
+    messages.value.push(guideMessage)
+    isTyping.value = false
   }
 
   const sendMessage = async () => {
@@ -77,29 +79,22 @@ export const useChat = (
     }
 
     messages.value.push(userMessage)
-    const messageText = newMessage.value
     newMessage.value = ''
 
     // Show typing indicator
     isTyping.value = true
 
     // Mock API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500 + Math.random() * 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    // Generate mock response
-    const responses = [
-      "That's an interesting question about this landmark. Let me share some fascinating details with you.",
-      "I'd be happy to tell you more about the history and significance of this place.",
-      "This landmark has a rich story. Here's what makes it special...",
-      'Great question! This location has some unique features that are worth exploring.',
-      'I can provide you with detailed information about this remarkable place.',
-    ]
+    // Simple mock response
+    const mockResponse = getMockGuideResponse()
 
     const guideMessage: ChatMessage = {
       id: `guide-${Date.now()}`,
       author: 'guide',
       authorName: guideName,
-      message: '',
+      message: mockResponse,
       timestamp: new Date(),
       isLoading: false,
       type: 'text',
@@ -107,10 +102,6 @@ export const useChat = (
 
     messages.value.push(guideMessage)
     isTyping.value = false
-
-    // Type the response
-    const response = responses[Math.floor(Math.random() * responses.length)]
-    await typeMessage(guideMessage, `${response} You asked: "${messageText}"`)
   }
 
   const scrollToBottom = () => {
