@@ -27,6 +27,33 @@ services:
       PHP_EXTENSION_PDO_SQLITE: 1
       PHP_EXTENSION_GD: 1
       PHP_EXTENSION_IMAGICK: 1
+  ai:
+    build: ai/.
+    container_name: bydgoszcz-ai
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - LLM_MODEL=${LLM_MODEL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEBUG=false
+      - FLASK_ENV=production
+      - MAX_TOKENS=1000
+      - TEMPERATURE=0.5
+    
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   guest_node_modules:
