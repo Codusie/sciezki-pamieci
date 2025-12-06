@@ -5,18 +5,19 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\CharMessageSender;
-use App\Http\Resources\ChatResponseResource;
+use App\Http\Requests\ChatMessageRequest;
 use App\Models\Landmark;
 use App\Models\User;
 use Exception;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Response;
 
 final class ChatController
 {
-    public function showHistory(Landmark $landmark): AnonymousResourceCollection
+    public function showHistory(Landmark $landmark): JsonResponse
     {
         /** @var User $user */
         $user = Auth::user();
@@ -47,7 +48,7 @@ final class ChatController
         // ]);
     }
 
-    public function sendMessage(Landmark $landmark): ChatResponseResource
+    public function sendMessage(ChatMessageRequest $request, Landmark $landmark): JsonResponse
     {
         /** @var User $user */
         $user = Auth::user();
@@ -58,7 +59,7 @@ final class ChatController
             'session_id' => $user->id,
             'persona' => $team,
             'landmark' => $landmark->name,
-            'query' => 'Hello, how are you?',
+            'query' => $request->message,
         ]);
 
         $reply = $response->json()['response'] ?? null;
@@ -67,8 +68,8 @@ final class ChatController
             throw new Exception('No response from AI');
         }
 
-        return ChatResponseResource::make([
-            'sender' => CharMessageSender::Agent,
+        return Response::json([
+            'sender' => CharMessageSender::Agent->value,
             'message' => $reply,
         ]);
     }
