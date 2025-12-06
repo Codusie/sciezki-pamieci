@@ -15,9 +15,9 @@ services:
   api:
     image: thecodingmachine/php:8.4-v5-apache
     ports:
-      - 80:80
+      - ${DOCKER_API_PORT:-80}:80
     volumes:
-      - ./api:/var/www/html/
+      - ./api:/var/www/html/:Z
     environment:
       PHP_INI_MEMORY_LIMIT: 1g
       APACHE_DOCUMENT_ROOT: public/
