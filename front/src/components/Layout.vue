@@ -1,10 +1,10 @@
 <template>
   <div class="layout">
-    <div class="content" :class="{ 'content--no-padding': isMap }">
+    <div class="content" :class="{ 'content--no-padding': isMap, 'content--chat': isChatMode }">
       <slot />
     </div>
 
-    <nav class="mobile-nav">
+    <nav v-if="!isChatMode" class="mobile-nav">
       <router-link
         v-for="item in items"
         :key="item.route"
@@ -27,6 +27,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const isMap = computed(() => route.path === '/')
+const isChatMode = computed(() => route.path.match(/^\/\d+$/))
 
 interface NavItem {
   label: string
@@ -71,6 +72,12 @@ const items: NavItem[] = [
     padding-bottom: 0;
     padding-top: 0;
     overflow-y: hidden; // Map handles its own scrolling/panning
+  }
+
+  &--chat {
+    padding-top: 0;
+    padding-bottom: 0;
+    overflow-y: hidden;
   }
 }
 

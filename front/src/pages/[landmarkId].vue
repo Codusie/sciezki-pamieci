@@ -5,9 +5,6 @@
         <div class="landmark-header">
           <div class="landmark-title">
             <h1>{{ data?.name || 'Loading landmark...' }}</h1>
-            <p v-if="data?.description" class="landmark-description">
-              {{ data.description }}
-            </p>
           </div>
 
           <div v-if="data?.localization_name" class="landmark-location">
@@ -18,10 +15,10 @@
 
         <div class="landmark-content">
           <Chat
-            v-if="data"
-            :landmark-id="landmarkId"
-            :initial-message="getInitialMessage(data)!"
-            :initial-picture="getInitialPicture(data)!"
+            v-if="data && chat"
+            :messages="chat.messages.value"
+            :is-typing="chat.isTyping.value"
+            :is-connected="chat.isConnected.value"
           />
           <div v-else class="chat-placeholder">
             <Card>
@@ -36,6 +33,14 @@
         </div>
       </div>
     </BaseLoading>
+
+    <!-- Fixed Chat Input -->
+    <ChatInput
+      v-if="data && chat"
+      v-model="newMessage"
+      :is-typing="chat.isTyping.value"
+      @send="handleSendMessage"
+    />
   </Layout>
 </template>
 
@@ -43,37 +48,64 @@
 import BaseLoading from '@/components/BaseLoading.vue'
 import Layout from '@/components/Layout.vue'
 import Chat from '@/components/Chat.vue'
+import ChatInput from '@/components/ChatInput.vue'
 import Card from 'primevue/card'
 import { useLandmark } from '@/composables/useLandmark'
-import { computed } from 'vue'
+import { useChat } from '@/composables/useChat'
+import { useAuthStore } from '@/stores/auth'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { components } from '@/schema'
+import type { Team } from '@/schema'
 
 type Landmark = components['schemas']['Landmark']
 
 const route = useRoute()
+const authStore = useAuthStore()
 const landmarkId = computed(() => Number(route.params.landmarkId))
 const { data, isLoading } = useLandmark(landmarkId)
+const newMessage = ref('')
+
+const getInitialPicture = (landmark?: Landmark) => {
+  return landmark?.thumbnail_url
+}
 
 // Mock function to generate initial message based on landmark data
-const getInitialMessage = (landmark: Landmark) => {
-  const messages = [
-    `Welcome to ${landmark.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`,
-    `Hello! I'm excited to share the rich history and unique features of ${landmark.name} with you. What would you like to know about this incredible landmark?`,
-    `Greetings, explorer! ${landmark.name} has so many wonderful stories to tell. I'm here to be your guide through its history, architecture, and cultural significance.`,
-    `Welcome! You've arrived at one of the most interesting places - ${landmark.name}. I have lots of fascinating information to share with you about this location.`,
-  ]
-
-  // Simple hash to get consistent message for same landmark
-  const hash = landmark.id % messages.length
-  return messages[hash]
+const getInitialMessage = (landmark?: Landmark) => {
+  return `Welcome to ${landmark?.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`
 }
 
-// Mock function to get initial picture
-const getInitialPicture = (landmark: Landmark) => {
-  // Use the thumbnail_url from landmark data or fallback to placeholder
-  return landmark.thumbnail_url || `https://picsum.photos/400/300?random=${landmark.id}`
+// Generate guide name based on selected team
+const getGuideName = (team?: Team) => {
+  const guideNames: Record<Team, string> = {
+    rejewski: 'Marian Rejewski',
+    kazimierz_wielki: 'Król Kazimierz Wielki',
+    twardowski: 'Pan Twardowski',
+  }
+  return team ? guideNames[team] : 'Virtual Guide'
 }
+
+const guideName = computed(() => getGuideName(authStore.guide))
+
+// Chat functionality
+const chat = useChat(
+  landmarkId.value,
+  getInitialMessage(data.value),
+  guideName.value,
+  getInitialPicture(data.value),
+)
+
+const handleSendMessage = () => {
+  if (chat && newMessage.value.trim()) {
+    chat.sendMessage(newMessage.value)
+    newMessage.value = ''
+    chat.scrollToBottom()
+  }
+}
+
+onBeforeMount(() => {
+  chat.connect()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -81,9 +113,12 @@ const getInitialPicture = (landmark: Landmark) => {
   max-width: 1200px;
   margin: 0 auto;
   padding: 2rem;
+  padding-bottom: 140px; // Space for fixed input
   display: flex;
   flex-direction: column;
   gap: 2rem;
+  height: calc(100vh - 80px); // Full height minus navbar
+  overflow: hidden;
 }
 
 .landmark-header {
@@ -102,14 +137,6 @@ const getInitialPicture = (landmark: Landmark) => {
       font-size: 2.5rem;
       font-weight: 700;
       line-height: 1.2;
-    }
-
-    .landmark-description {
-      margin: 0;
-      color: var(--p-text-muted-color);
-      font-size: 1.1rem;
-      line-height: 1.5;
-      max-width: 800px;
     }
   }
 
@@ -132,6 +159,7 @@ const getInitialPicture = (landmark: Landmark) => {
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .chat-placeholder {
@@ -166,10 +194,18 @@ const getInitialPicture = (landmark: Landmark) => {
   }
 }
 
+// Ensure body and html don't scroll when chat is active
+:global(body) {
+  &:has(.chat-input-fixed) {
+    overflow: hidden;
+  }
+}
+
 // Responsive design
 @media (max-width: 768px) {
   .landmark-view {
     padding: 1rem;
+    padding-bottom: 120px; // Adjust for mobile input
     gap: 1rem;
   }
 
@@ -183,6 +219,10 @@ const getInitialPicture = (landmark: Landmark) => {
 }
 
 @media (max-width: 480px) {
+  .landmark-view {
+    padding-bottom: 110px;
+  }
+
   .landmark-header {
     padding: 1rem;
 

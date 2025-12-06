@@ -21,7 +21,7 @@
           <div class="messages-container">
             <TransitionGroup name="message-list" tag="div">
               <ChatMessage
-                v-for="message in messages"
+                v-for="message in props.messages"
                 :key="message.id"
                 :author="message.author"
                 :author-name="message.authorName"
@@ -34,7 +34,7 @@
 
             <!-- Typing Indicator -->
             <Transition name="typing-fade">
-              <div v-if="isTyping" class="typing-indicator">
+              <div v-if="props.isTyping" class="typing-indicator">
                 <div class="typing-avatar">
                   <GuideAvatar size="32px" />
                 </div>
@@ -54,120 +54,47 @@
             </Transition>
           </div>
         </ScrollPanel>
-
-        <!-- Chat Input -->
-        <div class="chat-input-area">
-          <Card class="input-card">
-            <template #content>
-              <div class="input-container">
-                <InputGroup>
-                  <Textarea
-                    v-model="newMessage"
-                    placeholder="Ask about this landmark..."
-                    :rows="1"
-                    :auto-resize="true"
-                    :max-rows="4"
-                    class="chat-input"
-                    @keydown.enter.prevent="handleSendMessage"
-                    @keydown.shift.enter.prevent="addNewLine"
-                    :disabled="isTyping"
-                    aria-label="Type your message about the landmark"
-                  />
-                  <Button
-                    :icon="isTyping ? 'pi pi-spin pi-spinner' : 'pi pi-send'"
-                    severity="primary"
-                    class="send-button"
-                    :disabled="!canSendMessage"
-                    @click="handleSendMessage"
-                    :loading="isTyping"
-                  />
-                </InputGroup>
-
-                <div class="input-hints">
-                  <small class="hint-text">
-                    Press Enter to send • Ask about history, architecture, or interesting facts
-                  </small>
-                </div>
-              </div>
-            </template>
-          </Card>
-        </div>
       </div>
     </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch, nextTick } from 'vue'
+import { computed, watch, nextTick } from 'vue'
 import ChatMessage from './ChatMessage.vue'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
-import Textarea from 'primevue/textarea'
-import InputGroup from 'primevue/inputgroup'
 import ProgressSpinner from 'primevue/progressspinner'
 import ScrollPanel from 'primevue/scrollpanel'
 import GuideAvatar from './GuideAvatar.vue'
-import { useChat } from '@/composables/useChat'
-import { useAuthStore } from '@/stores/auth'
-import type { Team } from '@/schema'
+import type { ChatMessage as ChatMessageType } from '@/types/chat'
 
 interface Props {
-  landmarkId: number
-  initialMessage: string
-  initialPicture: string
+  messages: ChatMessageType[]
+  isTyping: boolean
+  isConnected: boolean
 }
 
 const props = defineProps<Props>()
-const authStore = useAuthStore()
 
-// Generate guide name based on selected team
-const getGuideName = (team?: Team) => {
-  const guideNames: Record<Team, string> = {
-    rejewski: 'Marian Rejewski',
-    kazimierz_wielki: 'Król Kazimierz Wielki',
-    twardowski: 'Pan Twardowski',
-  }
-  return team ? guideNames[team] : 'Virtual Guide'
+const scrollToBottom = () => {
+  nextTick(() => {
+    const chatContainer = document.querySelector('.chat-messages')
+    if (chatContainer) {
+      chatContainer.scrollTo({
+        top: chatContainer.scrollHeight,
+        behavior: 'smooth',
+      })
+    }
+  })
 }
 
-const guideName = computed(() => getGuideName(authStore.guide))
-
-const {
-  messages,
-  isTyping,
-  newMessage,
-  isConnected,
-  connect,
-  sendMessage,
-  scrollToBottom,
-  lastMessageId,
-} = useChat(props.landmarkId, props.initialMessage, props.initialPicture, guideName.value)
-
-const canSendMessage = computed(
-  () => newMessage.value.trim().length > 0 && !isTyping.value && isConnected.value,
-)
-
-const handleSendMessage = () => {
-  if (canSendMessage.value) {
-    sendMessage()
-    scrollToBottom()
-  }
-}
-
-const addNewLine = () => {
-  newMessage.value += '\n'
-}
+const lastMessageId = computed(() => props.messages[props.messages.length - 1]?.id)
 
 // Auto-scroll when new messages arrive
 watch(lastMessageId, () => {
   nextTick(() => {
     scrollToBottom()
   })
-})
-
-// Connect when component mounts
-onMounted(() => {
-  connect()
 })
 </script>
 
@@ -431,16 +358,6 @@ onMounted(() => {
 
   .messages-container {
     padding: 0.75rem;
-  }
-
-  .chat-input-area .input-card :deep(.p-card-content) {
-    padding: 0.75rem;
-  }
-
-  .input-container {
-    .input-hints .hint-text {
-      font-size: 0.7rem;
-    }
   }
 }
 </style>
