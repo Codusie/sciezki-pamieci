@@ -2,8 +2,38 @@
   <Layout>
     <BaseLoading :loading="isLoading">
       <div class="landmark-view">
-        <h1>{{ data?.name }}</h1>
-        <p>{{ data?.description }}</p>
+        <div class="landmark-header">
+          <div class="landmark-title">
+            <h1>{{ data?.name || 'Loading landmark...' }}</h1>
+            <p v-if="data?.description" class="landmark-description">
+              {{ data.description }}
+            </p>
+          </div>
+
+          <div v-if="data?.localization_name" class="landmark-location">
+            <i class="pi pi-map-marker"></i>
+            <span>{{ data.localization_name }}</span>
+          </div>
+        </div>
+
+        <div class="landmark-content">
+          <Chat
+            v-if="data"
+            :landmark-id="landmarkId"
+            :initial-message="getInitialMessage(data)!"
+            :initial-picture="getInitialPicture(data)!"
+          />
+          <div v-else class="chat-placeholder">
+            <Card>
+              <template #content>
+                <div class="placeholder-content">
+                  <i class="pi pi-comments"></i>
+                  <p>Loading chat interface...</p>
+                </div>
+              </template>
+            </Card>
+          </div>
+        </div>
       </div>
     </BaseLoading>
   </Layout>
@@ -12,16 +42,159 @@
 <script setup lang="ts">
 import BaseLoading from '@/components/BaseLoading.vue'
 import Layout from '@/components/Layout.vue'
+import Chat from '@/components/Chat.vue'
+import Card from 'primevue/card'
 import { useLandmark } from '@/composables/useLandmark'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import type { components } from '@/schema'
+
+type Landmark = components['schemas']['Landmark']
 
 const route = useRoute()
 const landmarkId = computed(() => Number(route.params.landmarkId))
 const { data, isLoading } = useLandmark(landmarkId)
+
+// Mock function to generate initial message based on landmark data
+const getInitialMessage = (landmark: Landmark) => {
+  const messages = [
+    `Welcome to ${landmark.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`,
+    `Hello! I'm excited to share the rich history and unique features of ${landmark.name} with you. What would you like to know about this incredible landmark?`,
+    `Greetings, explorer! ${landmark.name} has so many wonderful stories to tell. I'm here to be your guide through its history, architecture, and cultural significance.`,
+    `Welcome! You've arrived at one of the most interesting places - ${landmark.name}. I have lots of fascinating information to share with you about this location.`,
+  ]
+
+  // Simple hash to get consistent message for same landmark
+  const hash = landmark.id % messages.length
+  return messages[hash]
+}
+
+// Mock function to get initial picture
+const getInitialPicture = (landmark: Landmark) => {
+  // Use the thumbnail_url from landmark data or fallback to placeholder
+  return landmark.thumbnail_url || `https://picsum.photos/400/300?random=${landmark.id}`
+}
 </script>
 
 <style lang="scss" scoped>
 .landmark-view {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.landmark-header {
+  background: var(--p-surface-0);
+  padding: 2rem;
+  border-radius: var(--p-border-radius-lg);
+  border: 1px solid var(--p-surface-border);
+  box-shadow: var(--p-shadow-2);
+
+  .landmark-title {
+    margin-bottom: 1rem;
+
+    h1 {
+      margin: 0 0 0.5rem 0;
+      color: var(--p-text-color);
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-700));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .landmark-description {
+      margin: 0;
+      color: var(--p-text-muted-color);
+      font-size: 1.1rem;
+      line-height: 1.5;
+      max-width: 800px;
+    }
+  }
+
+  .landmark-location {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--p-text-muted-color);
+    font-size: 0.95rem;
+
+    i {
+      color: var(--p-primary-500);
+      font-size: 1.1rem;
+    }
+  }
+}
+
+.landmark-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-placeholder {
+  height: 600px;
+
+  .p-card {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed var(--p-surface-300);
+    background: var(--p-surface-50);
+
+    .placeholder-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      color: var(--p-text-muted-color);
+
+      i {
+        font-size: 3rem;
+        opacity: 0.5;
+      }
+
+      p {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .landmark-view {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .landmark-header {
+    padding: 1.5rem;
+
+    .landmark-title h1 {
+      font-size: 2rem;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .landmark-header {
+    padding: 1rem;
+
+    .landmark-title h1 {
+      font-size: 1.75rem;
+    }
+
+    .landmark-description {
+      font-size: 1rem;
+    }
+  }
 }
 </style>
