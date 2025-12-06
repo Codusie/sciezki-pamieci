@@ -2,6 +2,7 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { useMutation } from '@tanstack/vue-query'
 import { httpService } from '@/api'
+import type { Team } from '@/schema'
 
 export const useAuthStore = defineStore(
   'auth',
@@ -10,8 +11,8 @@ export const useAuthStore = defineStore(
     const isSessionError = ref(false)
 
     const { mutate: createNewSession, isPending: isInitializingSession } = useMutation({
-      mutationFn: async () => {
-        const { data } = await httpService.POST('/users')
+      mutationFn: async (team: Team) => {
+        const { data } = await httpService.POST('/users', { body: { team } })
         return data?.access_token
       },
       onSuccess: (newToken) => {
@@ -23,13 +24,9 @@ export const useAuthStore = defineStore(
       },
     })
 
-    const initializeSession = () => {
-      if (!accessToken.value) createNewSession()
-    }
-
     return {
       accessToken,
-      initializeSession,
+      createNewSession,
       isInitializingSession,
       isSessionError,
     }

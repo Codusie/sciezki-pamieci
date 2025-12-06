@@ -1,8 +1,5 @@
 <template>
-  <h1>You did it!</h1>
-  <p>accessToken: {{ store.accessToken }}</p>
-  {{ store.isSessionError }}
-  <Button>Button</Button>
+  <RouterView />
 
   <div class="global-loading" :class="{ 'global-loading--active': store.isInitializingSession }">
     <img src="@/assets/images/logo-bydgoszcz.jpg" alt="Logo Miasto Bydgoszcz" height="150" />
@@ -14,11 +11,13 @@
 import { onBeforeMount } from 'vue'
 import { useAuthStore } from './stores/auth'
 import BaseLoading from './components/BaseLoading.vue'
+import { useRouter } from 'vue-router'
 
 const store = useAuthStore()
+const router = useRouter()
 
 onBeforeMount(() => {
-  store.initializeSession()
+  if (!store.accessToken) router.push({ name: 'choose-your-team' })
 })
 </script>
 

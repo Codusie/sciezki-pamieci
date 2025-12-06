@@ -13,6 +13,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
     Button: typeof import('primevue/button')['default']
+    ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
