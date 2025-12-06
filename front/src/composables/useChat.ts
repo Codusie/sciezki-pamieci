@@ -9,7 +9,6 @@ export const useChat = (
 ) => {
   const messages = ref<ChatMessage[]>([])
   const isTyping = ref(false)
-  const newMessage = ref('')
   const isConnected = ref(false)
 
   // Mock connection delay
@@ -67,19 +66,18 @@ export const useChat = (
     isTyping.value = false
   }
 
-  const sendMessage = async () => {
-    if (!newMessage.value.trim() || isTyping.value) return
+  const sendMessage = async (messageText: string) => {
+    if (!messageText.trim() || isTyping.value) return
 
     const userMessage: ChatMessage = {
       id: `user-${Date.now()}`,
       author: 'user',
-      message: newMessage.value,
+      message: messageText,
       timestamp: new Date(),
       type: 'text',
     }
 
     messages.value.push(userMessage)
-    newMessage.value = ''
 
     // Show typing indicator
     isTyping.value = true
@@ -122,7 +120,6 @@ export const useChat = (
   return {
     messages,
     isTyping,
-    newMessage,
     isConnected,
     connect,
     sendMessage,

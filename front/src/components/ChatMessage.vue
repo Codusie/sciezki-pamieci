@@ -258,10 +258,17 @@ const formattedMessage = computed(() => {
   .landmark-image {
     width: 100%;
     height: auto;
+    aspect-ratio: 1/1.24;
     display: block;
     transition: opacity 0.3s ease;
     border-radius: 16px;
     overflow: hidden;
+
+    :deep(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
     &.image-loading {
       opacity: 0.6;
@@ -298,8 +305,6 @@ const formattedMessage = computed(() => {
       border: none;
 
       :deep(.p-card-content) {
-        padding: 0.75rem 1rem;
-
         .message-body {
           color: white;
           font-weight: 500;
@@ -313,8 +318,6 @@ const formattedMessage = computed(() => {
       border-left: 4px solid var(--p-green-500);
 
       :deep(.p-card-content) {
-        padding: 0.75rem 1rem;
-
         .message-body {
           color: var(--p-stone-600);
           line-height: 1.5;

@@ -14,6 +14,7 @@ declare module 'vue' {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
     Button: typeof import('primevue/button')['default']
     Chat: typeof import('./src/components/Chat.vue')['default']
+    ChatInput: typeof import('./src/components/ChatInput.vue')['default']
     ChatMessage: typeof import('./src/components/ChatMessage.vue')['default']
     ChooseGuide: typeof import('./src/components/ChooseGuide.vue')['default']
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
