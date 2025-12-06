@@ -13,9 +13,11 @@ final class Landmark extends Model
 
     protected $fillable = [
         'name',
+        'localization_name',
         'description',
         'latitude',
         'longitude',
         'thumbnail_url',
+        'map_url',
     ];
 }
