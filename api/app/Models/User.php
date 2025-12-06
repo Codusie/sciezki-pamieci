@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
-final class Guest extends Model
+final class User extends Model
 {
     use HasApiTokens;
     use HasFactory;
