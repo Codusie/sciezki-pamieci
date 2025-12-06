@@ -1,19 +1,20 @@
-import { ref, computed, nextTick } from 'vue'
+import { ref, computed, nextTick, type MaybeRef, unref } from 'vue'
 import type { ChatMessage } from '@/types/chat'
+import { useMutation } from '@tanstack/vue-query'
+import { httpService } from '@/api'
 
 export const useChat = (
   landmarkId: number,
-  initialMessage: string,
   guideName: string,
-  initialPicture?: string,
+  initialPicture?: MaybeRef<string | undefined>,
 ) => {
   const messages = ref<ChatMessage[]>([])
-  const isTyping = ref(false)
   const isConnected = ref(false)
 
   // Mock connection delay
   const connect = async () => {
-    await new Promise((resolve) => setTimeout(resolve, 800))
+    sendInitialMessage()
+
     isConnected.value = true
 
     // Add initial picture message without loading
@@ -22,89 +23,72 @@ export const useChat = (
       author: 'guide',
       authorName: guideName,
       message: '',
-      image: initialPicture,
+      image: unref(initialPicture),
       timestamp: new Date(),
       isLoading: false,
       type: 'image',
     }
 
-    if (initialPicture) messages.value.push(initialImageMessage)
-
-    // Automatically send initial user message (hidden) to trigger guide response
     setTimeout(() => {
-      sendInitialMessage(initialMessage)
-    }, 2000)
+      if (unref(initialPicture)) messages.value.push(initialImageMessage)
+    }, 300)
   }
 
-  const getMockGuideResponse = () => {
-    return "Thank you for your question! As your guide, I'd be happy to share more details about this fascinating landmark. What specific aspect would you like to explore further?"
-  }
+  const { mutate: sendMessage, isPending: isTyping } = useMutation({
+    onMutate: (messageText: string) => {
+      const userMessage: ChatMessage = {
+        id: `user-${Date.now()}`,
+        author: 'user',
+        message: messageText,
+        timestamp: new Date(),
+        type: 'text',
+      }
+      messages.value.push(userMessage)
+    },
+    mutationFn: async (messageText: string) => {
+      const { data } = await httpService.POST('/chats/{landmark}/message', {
+        body: {
+          message: messageText,
+        },
+        params: {
+          path: {
+            landmark: landmarkId,
+          },
+        },
+      })
+      return data
+      // return Promise.resolve({
+      //   message: messageText,
+      // })
+    },
 
-  const getInitialGuideResponse = (prompt: string) => {
-    return prompt
-  }
+    onSuccess: (responseText) => {
+      console.log('🚀 ~ useChat ~ responseText:', responseText)
+      const guideMessage: ChatMessage = {
+        id: `guide-${Date.now()}`,
+        author: 'guide',
+        authorName: guideName,
+        // @ts-expect-error TODO
+        message: responseText.message as string,
+        timestamp: new Date(),
+        isLoading: false,
+        type: 'text',
+      }
 
-  const sendInitialMessage = async (prompt: string) => {
-    // Show typing indicator for consistent loading state
-    isTyping.value = true
+      messages.value.push(guideMessage)
+    },
+  })
 
-    // Mock API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+  const sendInitialMessage = async () => {
+    const INITIAL_MESSAGE =
+      'Cześć! Chciałbym dowiedzieć się więcej o tym miejscu. Co możesz mi o nim opowiedzieć?'
 
-    // Send initial guide response based on prompt
-    const guideMessage: ChatMessage = {
-      id: `guide-initial-${Date.now()}`,
-      author: 'guide',
-      authorName: guideName,
-      message: getInitialGuideResponse(prompt),
-      timestamp: new Date(),
-      isLoading: false,
-      type: 'text',
-    }
-
-    messages.value.push(guideMessage)
-    isTyping.value = false
-  }
-
-  const sendMessage = async (messageText: string) => {
-    if (!messageText.trim() || isTyping.value) return
-
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      author: 'user',
-      message: messageText,
-      timestamp: new Date(),
-      type: 'text',
-    }
-
-    messages.value.push(userMessage)
-
-    // Show typing indicator
-    isTyping.value = true
-
-    // Mock API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Simple mock response
-    const mockResponse = getMockGuideResponse()
-
-    const guideMessage: ChatMessage = {
-      id: `guide-${Date.now()}`,
-      author: 'guide',
-      authorName: guideName,
-      message: mockResponse,
-      timestamp: new Date(),
-      isLoading: false,
-      type: 'text',
-    }
-
-    messages.value.push(guideMessage)
-    isTyping.value = false
+    sendMessage(INITIAL_MESSAGE)
   }
 
   const scrollToBottom = () => {
     nextTick(() => {
-      const chatContainer = document.querySelector('.chat-messages')
+      const chatContainer = document.querySelector('.p-scrollpanel-content')
       if (chatContainer) {
         chatContainer.scrollTo({
           top: chatContainer.scrollHeight,

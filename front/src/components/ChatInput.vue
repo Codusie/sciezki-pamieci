@@ -7,7 +7,7 @@
             <Textarea
               :model-value="modelValue"
               @update:model-value="emit('update:modelValue', $event)"
-              placeholder="Ask about this landmark..."
+              placeholder="Zapytaj o ten zabytek..."
               :rows="1"
               :auto-resize="true"
               :max-rows="4"
@@ -15,7 +15,7 @@
               @keydown.enter.prevent="handleSendMessage"
               @keydown.shift.enter.prevent="addNewLine"
               :disabled="isTyping"
-              aria-label="Type your message about the landmark"
+              aria-label="Wpisz swoją wiadomość do przewodnika"
             />
             <Button
               :icon="isTyping ? 'pi pi-spin pi-spinner' : 'pi pi-send'"
@@ -28,9 +28,7 @@
           </InputGroup>
 
           <div class="input-hints">
-            <small class="hint-text">
-              Press Enter to send • Ask about history, architecture, or interesting facts
-            </small>
+            <small class="hint-text"> Zapytaj o historię, architekturę lub ciekawostki</small>
           </div>
         </div>
       </template>
@@ -85,7 +83,7 @@ const addNewLine = () => {
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.05),
     0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-  max-width: 500px;
+  max-width: 90vw;
   margin: 0 auto;
 
   .input-card {
@@ -168,7 +166,7 @@ const addNewLine = () => {
     bottom: 2rem;
     left: 0.75rem;
     right: 0.75rem;
-    
+
     .input-card :deep(.p-card-content) {
       padding: 0.75rem 1rem;
     }

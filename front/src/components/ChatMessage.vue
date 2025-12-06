@@ -20,7 +20,7 @@
         <div class="message-content">
           <!-- Author and timestamp -->
           <div class="message-header">
-            <span class="message-author">{{ authorName || (isUser ? 'You' : 'Guide') }}</span>
+            <span class="message-author">{{ authorName || (isUser ? 'Ty' : 'Przewodnik') }}</span>
             <small class="message-time">{{ formattedTime }}</small>
           </div>
 
@@ -31,7 +31,7 @@
               <div class="dot"></div>
               <div class="dot"></div>
             </div>
-            <span class="loading-text">Loading...</span>
+            <span class="loading-text">Ładowanie...</span>
           </div>
 
           <!-- Image message -->

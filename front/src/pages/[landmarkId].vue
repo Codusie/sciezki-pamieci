@@ -4,18 +4,18 @@
       <div class="landmark-view">
         <div class="landmark-header">
           <div class="landmark-title">
-            <h1>{{ data?.name || 'Loading landmark...' }}</h1>
+            <h1>{{ landmark?.name || 'Wczytywanie...' }}</h1>
           </div>
 
-          <div v-if="data?.localization_name" class="landmark-location">
+          <div v-if="landmark?.localization_name" class="landmark-location">
             <i class="pi pi-map-marker"></i>
-            <span>{{ data.localization_name }}</span>
+            <span>{{ landmark.localization_name }}</span>
           </div>
         </div>
 
         <div class="landmark-content">
           <Chat
-            v-if="data && chat"
+            v-if="landmark && chat"
             :messages="chat.messages.value"
             :is-typing="chat.isTyping.value"
             :is-connected="chat.isConnected.value"
@@ -25,7 +25,7 @@
               <template #content>
                 <div class="placeholder-content">
                   <i class="pi pi-comments"></i>
-                  <p>Loading chat interface...</p>
+                  <p>Ładowanie interfejsu czatu...</p>
                 </div>
               </template>
             </Card>
@@ -36,7 +36,7 @@
 
     <!-- Fixed Chat Input -->
     <ChatInput
-      v-if="data && chat"
+      v-if="landmark && chat"
       v-model="newMessage"
       :is-typing="chat.isTyping.value"
       @send="handleSendMessage"
@@ -53,27 +53,15 @@ import Card from 'primevue/card'
 import { useLandmark } from '@/composables/useLandmark'
 import { useChat } from '@/composables/useChat'
 import { useAuthStore } from '@/stores/auth'
-import { computed, onBeforeMount, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import type { components } from '@/schema'
 import type { Team } from '@/schema'
-
-type Landmark = components['schemas']['Landmark']
 
 const route = useRoute()
 const authStore = useAuthStore()
 const landmarkId = computed(() => Number(route.params.landmarkId))
-const { data, isLoading } = useLandmark(landmarkId)
+const { data: landmark, isLoading } = useLandmark(landmarkId)
 const newMessage = ref('')
-
-const getInitialPicture = (landmark?: Landmark) => {
-  return landmark?.thumbnail_url
-}
-
-// Mock function to generate initial message based on landmark data
-const getInitialMessage = (landmark?: Landmark) => {
-  return `Welcome to ${landmark?.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`
-}
 
 // Generate guide name based on selected team
 const getGuideName = (team?: Team) => {
@@ -90,9 +78,8 @@ const guideName = computed(() => getGuideName(authStore.guide))
 // Chat functionality
 const chat = useChat(
   landmarkId.value,
-  getInitialMessage(data.value),
   guideName.value,
-  getInitialPicture(data.value),
+  computed(() => landmark.value?.thumbnail_url),
 )
 
 const handleSendMessage = () => {
@@ -103,9 +90,17 @@ const handleSendMessage = () => {
   }
 }
 
-onBeforeMount(() => {
-  chat.connect()
+watch(chat.lastMessageId, () => {
+  chat.scrollToBottom()
 })
+
+watch(
+  () => landmark.value,
+  (newLandmark) => {
+    if (newLandmark) chat.connect()
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="scss" scoped>

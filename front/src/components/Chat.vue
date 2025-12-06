@@ -7,7 +7,7 @@
           <template #content>
             <div class="status-content">
               <ProgressSpinner size="2rem" stroke-width="3" />
-              <span>Connecting to guide...</span>
+              <span>Łączenie z przewodnikiem...</span>
             </div>
           </template>
         </Card>
@@ -46,7 +46,7 @@
                         <div class="dot"></div>
                         <div class="dot"></div>
                       </div>
-                      <span class="typing-text">Guide is typing...</span>
+                      <span class="typing-text">Przewodnik pisze...</span>
                     </div>
                   </template>
                 </Card>
@@ -60,7 +60,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, watch, nextTick } from 'vue'
 import ChatMessage from './ChatMessage.vue'
 import Card from 'primevue/card'
 import ProgressSpinner from 'primevue/progressspinner'
@@ -75,27 +74,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-const scrollToBottom = () => {
-  nextTick(() => {
-    const chatContainer = document.querySelector('.chat-messages')
-    if (chatContainer) {
-      chatContainer.scrollTo({
-        top: chatContainer.scrollHeight,
-        behavior: 'smooth',
-      })
-    }
-  })
-}
-
-const lastMessageId = computed(() => props.messages[props.messages.length - 1]?.id)
-
-// Auto-scroll when new messages arrive
-watch(lastMessageId, () => {
-  nextTick(() => {
-    scrollToBottom()
-  })
-})
 </script>
 
 <style lang="scss" scoped>
