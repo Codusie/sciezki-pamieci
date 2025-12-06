@@ -3,4 +3,4 @@ ai/venv
 .env
 notebooks/
 __pycache__/
-.vscode/
+.vscode

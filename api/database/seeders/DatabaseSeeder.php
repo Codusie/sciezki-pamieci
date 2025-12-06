@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Admin;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
+final class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
@@ -15,9 +18,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()->create([
-            'name' => 'Test User',
+        Admin::create([
+            'name' => 'Test Admin',
             'email' => 'test@example.com',
+            'password' => Hash::make('secret'),
+        ]);
+
+        $this->call([
+            LandmarkSeeder::class,
+            ReelSeeder::class,
         ]);
     }
 }

@@ -1,11 +1,12 @@
 services:
   front:
     image: oven/bun:1
+    userns_mode: keep-id
     working_dir: /usr/src/app
     ports:
       - "3000:3000"
     volumes:
-      - ./front:/usr/src/app
+      - ./front:/usr/src/app/:Z
       - guest_node_modules:/usr/src/app/node_modules
     environment:
       NODE_ENV: development
@@ -14,10 +15,11 @@ services:
 
   api:
     image: thecodingmachine/php:8.4-v5-apache
+    userns_mode: keep-id
     ports:
-      - 80:80
+      - ${DOCKER_API_PORT:-80}:80
     volumes:
-      - ./api:/var/www/html/
+      - ./api:/var/www/html/:Z
     environment:
       PHP_INI_MEMORY_LIMIT: 1g
       APACHE_DOCUMENT_ROOT: public/
