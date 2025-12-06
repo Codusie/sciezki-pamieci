@@ -1,6 +1,7 @@
 export interface ChatMessage {
   id: string
-  author: 'user' | 'bot' | 'guide'
+  author: 'user' | 'guide'
+  authorName?: string
   message: string
   image?: string
   timestamp: Date

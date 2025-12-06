@@ -1,7 +1,12 @@
 import { ref, computed, nextTick } from 'vue'
 import type { ChatMessage } from '@/types/chat'
 
-export const useChat = (landmarkId: number, initialMessage: string, initialPicture: string) => {
+export const useChat = (
+  landmarkId: number,
+  initialMessage: string,
+  initialPicture: string,
+  guideName: string,
+) => {
   const messages = ref<ChatMessage[]>([])
   const isTyping = ref(false)
   const newMessage = ref('')
@@ -16,6 +21,7 @@ export const useChat = (landmarkId: number, initialMessage: string, initialPictu
     const initialImageMessage: ChatMessage = {
       id: `initial-image-${Date.now()}`,
       author: 'guide',
+      authorName: guideName,
       message: '',
       image: initialPicture,
       timestamp: new Date(),
@@ -35,6 +41,7 @@ export const useChat = (landmarkId: number, initialMessage: string, initialPictu
       const initialTextMessage: ChatMessage = {
         id: `initial-text-${Date.now()}`,
         author: 'guide',
+        authorName: guideName,
         message: '',
         timestamp: new Date(),
         isLoading: true,
@@ -88,21 +95,22 @@ export const useChat = (landmarkId: number, initialMessage: string, initialPictu
       'I can provide you with detailed information about this remarkable place.',
     ]
 
-    const botMessage: ChatMessage = {
-      id: `bot-${Date.now()}`,
-      author: 'bot',
+    const guideMessage: ChatMessage = {
+      id: `guide-${Date.now()}`,
+      author: 'guide',
+      authorName: guideName,
       message: '',
       timestamp: new Date(),
       isLoading: false,
       type: 'text',
     }
 
-    messages.value.push(botMessage)
+    messages.value.push(guideMessage)
     isTyping.value = false
 
     // Type the response
     const response = responses[Math.floor(Math.random() * responses.length)]
-    await typeMessage(botMessage, `${response} You asked: "${messageText}"`)
+    await typeMessage(guideMessage, `${response} You asked: "${messageText}"`)
   }
 
   const scrollToBottom = () => {

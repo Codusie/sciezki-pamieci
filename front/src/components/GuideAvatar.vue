@@ -7,16 +7,17 @@
 <script setup lang="ts">
 import { useGuideColor } from '@/composables/useGuideColor'
 
+const { size = '64px' } = defineProps<{
+  size?: string
+}>()
+
 const color = useGuideColor(500)
 </script>
 
 <style lang="scss" scoped>
 .avatar-guide {
-  position: fixed;
-  left: 24px;
-  top: 24px;
-  width: 64px;
-  height: 64px;
+  width: v-bind(size);
+  height: v-bind(size);
   border-radius: 50%;
   z-index: 9900;
   box-shadow:

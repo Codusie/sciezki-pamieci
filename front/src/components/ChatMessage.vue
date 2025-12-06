@@ -1,15 +1,17 @@
 <template>
-  <div class="chat-message-wrapper" :class="{ 'user-message': isUser, 'bot-message': isBot }">
+  <div class="chat-message-wrapper" :class="{ 'user-message': isUser, 'guide-message': isGuide }">
     <Transition name="message-fade" appear>
       <div class="chat-message">
         <!-- Avatar -->
         <div class="message-avatar">
+          <GuideAvatar v-if="isGuide" :size="'48px'" />
           <Avatar
+            v-else
             :label="avatarLabel"
             :icon="avatarIcon"
             :image="avatarImage"
             shape="circle"
-            :size="isUser ? 'normal' : 'large'"
+            size="normal"
             :class="avatarClass"
           />
         </div>
@@ -18,7 +20,7 @@
         <div class="message-content">
           <!-- Author and timestamp -->
           <div class="message-header">
-            <span class="message-author">{{ author }}</span>
+            <span class="message-author">{{ authorName || (isUser ? 'You' : 'Guide') }}</span>
             <small class="message-time">{{ formattedTime }}</small>
           </div>
 
@@ -68,9 +70,11 @@ import { computed, ref } from 'vue'
 import Avatar from 'primevue/avatar'
 import Card from 'primevue/card'
 import Image from 'primevue/image'
+import GuideAvatar from './GuideAvatar.vue'
 
 interface Props {
-  author: 'user' | 'bot' | 'guide'
+  author: 'user' | 'guide'
+  authorName?: string
   message: string
   image?: string
   timestamp?: Date
@@ -86,18 +90,20 @@ const imageLoading = ref(true)
 const imageError = ref(false)
 
 const isUser = computed(() => props.author === 'user')
-const isBot = computed(() => props.author === 'bot' || props.author === 'guide')
+const isGuide = computed(() => props.author === 'guide')
 
 const avatarLabel = computed(() => {
   if (props.author === 'user') return 'U'
-  if (props.author === 'guide') return 'G'
-  return 'B'
+  if (props.author === 'guide') {
+    return props.authorName ? props.authorName.charAt(0).toUpperCase() : 'G'
+  }
+  return 'G'
 })
 
 const avatarIcon = computed(() => {
   if (props.author === 'user') return 'pi pi-user'
   if (props.author === 'guide') return 'pi pi-compass'
-  return 'pi pi-android'
+  return 'pi pi-compass'
 })
 
 const avatarImage = computed(() => {
@@ -107,14 +113,12 @@ const avatarImage = computed(() => {
 
 const avatarClass = computed(() => ({
   'user-avatar': isUser.value,
-  'bot-avatar': isBot.value,
-  'guide-avatar': props.author === 'guide',
+  'guide-avatar': isGuide.value,
 }))
 
 const messageCardClass = computed(() => ({
   'user-card': isUser.value,
-  'bot-card': isBot.value,
-  'guide-card': props.author === 'guide',
+  'guide-card': isGuide.value,
 }))
 
 const formattedTime = computed(() => {
@@ -152,7 +156,7 @@ const formattedMessage = computed(() => {
     }
   }
 
-  &.bot-message {
+  &.guide-message {
     display: flex;
     justify-content: flex-start;
   }
@@ -168,15 +172,13 @@ const formattedMessage = computed(() => {
 .message-avatar {
   flex-shrink: 0;
   margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   .user-avatar {
     background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-700));
     color: white;
-  }
-
-  .bot-avatar {
-    background: linear-gradient(135deg, var(--p-surface-200), var(--p-surface-300));
-    color: var(--p-text-color);
   }
 
   .guide-avatar {
@@ -258,6 +260,8 @@ const formattedMessage = computed(() => {
     height: auto;
     display: block;
     transition: opacity 0.3s ease;
+    border-radius: 16px;
+    overflow: hidden;
 
     &.image-loading {
       opacity: 0.6;
@@ -303,10 +307,10 @@ const formattedMessage = computed(() => {
       }
     }
 
-    &.bot-card,
     &.guide-card {
       background: var(--p-surface-0);
       border: 1px solid var(--p-surface-200);
+      border-left: 4px solid var(--p-green-500);
 
       :deep(.p-card-content) {
         padding: 0.75rem 1rem;
@@ -316,10 +320,6 @@ const formattedMessage = computed(() => {
           line-height: 1.5;
         }
       }
-    }
-
-    &.guide-card {
-      border-left: 4px solid var(--p-green-500);
     }
   }
 }

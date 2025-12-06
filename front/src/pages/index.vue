@@ -1,6 +1,8 @@
 <template>
   <Layout>
     <div class="map-view">
+      <GuideAvatar class="map-view__avatar" />
+
       <Map
         class="map-view__map"
         v-bind="locatedAt ? { center: [coords.latitude, coords.longitude] } : undefined"
@@ -23,6 +25,7 @@
 import Layout from '@/components/Layout.vue'
 import Map from '@/components/Map.vue'
 import MapMarker from '@/components/MapMarker.vue'
+import GuideAvatar from '@/components/GuideAvatar.vue'
 import { useGeolocation } from '@vueuse/core'
 import { LCircleMarker } from '@vue-leaflet/vue-leaflet'
 import { useLandmarks } from '@/composables/useLandmarks'
@@ -39,6 +42,12 @@ const { coords, locatedAt } = useGeolocation({
 .map-view {
   width: 100%;
   height: 100%;
+
+  &__avatar {
+    position: fixed;
+    left: 24px;
+    top: 24px;
+  }
 
   &__map {
     width: 100%;

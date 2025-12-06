@@ -1,7 +1,5 @@
 <template>
   <div class="layout">
-    <GuideAvatar />
-
     <div class="content" :class="{ 'content--no-padding': isMap }">
       <slot />
     </div>
@@ -26,7 +24,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
-import GuideAvatar from '@/components/GuideAvatar.vue'
 
 const route = useRoute()
 const isMap = computed(() => route.path === '/')

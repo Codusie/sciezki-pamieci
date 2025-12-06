@@ -24,6 +24,7 @@
                 v-for="message in messages"
                 :key="message.id"
                 :author="message.author"
+                :author-name="message.authorName"
                 :message="message.message"
                 :image="message.image"
                 :timestamp="message.timestamp"
@@ -35,7 +36,7 @@
             <Transition name="typing-fade">
               <div v-if="isTyping" class="typing-indicator">
                 <div class="typing-avatar">
-                  <Avatar icon="pi pi-android" shape="circle" size="normal" class="bot-avatar" />
+                  <GuideAvatar size="32px" />
                 </div>
                 <Card class="typing-card">
                   <template #content>
@@ -106,7 +107,10 @@ import InputGroup from 'primevue/inputgroup'
 import Avatar from 'primevue/avatar'
 import ProgressSpinner from 'primevue/progressspinner'
 import ScrollPanel from 'primevue/scrollpanel'
+import GuideAvatar from './GuideAvatar.vue'
 import { useChat } from '@/composables/useChat'
+import { useAuthStore } from '@/stores/auth'
+import type { Team } from '@/schema'
 
 interface Props {
   landmarkId: number
@@ -115,6 +119,19 @@ interface Props {
 }
 
 const props = defineProps<Props>()
+const authStore = useAuthStore()
+
+// Generate guide name based on selected team
+const getGuideName = (team?: Team) => {
+  const guideNames: Record<Team, string> = {
+    rejewski: 'Marian Rejewski',
+    kazimierz_wielki: 'Król Kazimierz Wielki',
+    twardowski: 'Pan Twardowski',
+  }
+  return team ? guideNames[team] : 'Virtual Guide'
+}
+
+const guideName = computed(() => getGuideName(authStore.guide))
 
 const {
   messages,
@@ -125,7 +142,7 @@ const {
   sendMessage,
   scrollToBottom,
   lastMessageId,
-} = useChat(props.landmarkId, props.initialMessage, props.initialPicture)
+} = useChat(props.landmarkId, props.initialMessage, props.initialPicture, guideName.value)
 
 const canSendMessage = computed(
   () => newMessage.value.trim().length > 0 && !isTyping.value && isConnected.value,
@@ -227,9 +244,8 @@ onMounted(() => {
   margin-bottom: 1rem;
   animation: slideUp 0.3s ease-out;
 
-  .typing-avatar .bot-avatar {
-    background: linear-gradient(135deg, var(--p-surface-200), var(--p-surface-300));
-    color: var(--p-text-color);
+  .typing-avatar {
+    /* GuideAvatar handles its own styling */
   }
 
   .typing-card {
