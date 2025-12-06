@@ -7,25 +7,50 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from typing import List, Dict, Tuple
+import pandas as pd
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class DocumentStore:
     """Stores and manages documents with vector embeddings"""
     
     def __init__(self):
-        self.documents: Dict[str, str] = {}  # landmark_name -> document_text
+        self.landmarks: Dict[str, str] = {}                # landmark_name -> document_text - initial info about landmark
+        self.historical_info: str[str] = []                      # tour guide dumps
+        self.documents: str[str] = []
         self.vectorizer = None
         self.vectors = None
-        self.landmark_names = []
         
-    def add_document(self, landmark_name: str, content: str) -> None:
-        """Add a document for a landmark"""
-        self.documents[landmark_name] = content
-        self._rebuild_vectors()
         
-    def add_documents(self, documents: Dict[str, str]) -> None:
+    def add_documents(self, documents_csv: str=None, historical_info_txt: str=None) -> None:
         """Add multiple documents at once"""
-        self.documents.update(documents)
+        if documents_csv is None and historical_info is None:
+            logger.info('No documents provided to add.')
+            return
+        
+        if documents_csv:
+            landmarks = pd.read_csv(documents_csv)
+            landmarks = list(zip(landmarks['Nazwa punktu'], landmarks['Nazwa punktu']))
+            self.landmarks = {k:v for k, v in landmarks}
+            logger.info(f'Added {len(self.landmarks)} landmark documents from CSV.')
+
+        if historical_info_txt:
+            historical_info = []
+            with open(historical_info_txt, 'r', encoding='utf-8') as f:
+                for line in f.readlines():
+                    if len(line.strip()) == 0:
+                        continue
+                    historical_info += [line.strip()]
+            self.historical_info = historical_info
+            logger.info(f'Added {len(self.historical_info)} historical documents from text file.')
+        
+        self.documents = [f'Obiekt: {name}\nOpis:{description}' \
+                          for name, description in self.landmarks.items()] + \
+                         self.historical_info
         self._rebuild_vectors()
         
     def _rebuild_vectors(self) -> None:
@@ -33,15 +58,14 @@ class DocumentStore:
         if not self.documents:
             return
             
-        self.landmark_names = list(self.documents.keys())
-        texts = [self.documents[name] for name in self.landmark_names]
-        
-        self.vectorizer = TfidfVectorizer(max_features=500, stop_words='english')
+        texts = self.documents
+        self.vectorizer = TfidfVectorizer(max_features=1000)
         self.vectors = self.vectorizer.fit_transform(texts)
+        logger.info('Rebuilt document vectors.')
         
-    def get_document(self, landmark_name: str) -> str:
-        """Get the full document for a landmark"""
-        return self.documents.get(landmark_name, "")
+    def get_landmark_description(self, landmark_name: str) -> str:
+        """Get the full description for a landmark"""
+        return self.landmarks.get(landmark_name, "")
     
     def retrieve_relevant_context(self, query: str, top_k: int = 3) -> List[Tuple[str, str, float]]:
         """
@@ -59,10 +83,9 @@ class DocumentStore:
         
         results = []
         for idx in top_indices:
-            landmark_name = self.landmark_names[idx]
-            content = self.documents[landmark_name]
+            content = self.documents[idx]
             score = float(similarities[idx])
-            results.append((landmark_name, content, score))
+            results.append((content, score))
             
         return results
 

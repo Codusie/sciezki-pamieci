@@ -1,6 +1,6 @@
 # Bydgoszcz LLM Tour Guide API
 
-A Flask-based API that serves as an intelligent, personalized tour guide for the city of Bydgoszcz. The system uses LLM (Large Language Model) technology to provide engaging landmark explanations tailored to individual user personas.
+A Flask-based API that serves as an intelligent, personalized tour guide for the city of Bydgoszcz. The system uses LLM (Large Language Model) technology to provide engaging landmark explanations tailored to individual users.
 
 ## Features
 
@@ -20,7 +20,8 @@ A Flask-based API that serves as an intelligent, personalized tour guide for the
 3. **document_store.py** - Document vectorization and semantic search
 4. **session_manager.py** - Multi-user session management
 5. **config.py** - Configuration management
-6. **sample_documents.py** - Sample landmark documents (your data goes here)
+
+All datasets are stored in "data"
 
 ## Installation
 
@@ -40,7 +41,7 @@ pip install -r requirements.txt
 
 ### 3. Configure API Key
 
-Copy `.env.example` to `.env` and add your API keys:
+Copy `.env.example` (in config) to `.env` and add your API keys:
 
 ```bash
 cp .env.example .env
@@ -81,9 +82,9 @@ Content-Type: application/json
 
 {
     "session_id": "optional-uuid",
-    "persona": "history enthusiast",
-    "landmark": "Cathedral Basilica of Our Lady",
-    "query": "Tell me about the architecture"
+    "persona": "Jan Kazimierz", (or "Luczniczka", "Kazimierz Wielki", "Marian Rejewski", "Pan Twardowski")
+    "landmark": "Wyspa Młyńska",
+    "query": "Powiedz mi o architekturze wyspy młyńskiej"
 }
 ```
 
@@ -91,10 +92,10 @@ Content-Type: application/json
 ```json
 {
     "session_id": "uuid",
-    "landmark": "Cathedral Basilica of Our Lady",
-    "persona": "history enthusiast",
-    "query": "Tell me about the architecture",
-    "response": "The Cathedral's architecture reflects...",
+    "landmark": "Wyspa Młyńska",
+    "persona": "Jan Kazimierz",
+    "query": "Powiedz mi o architekturze wyspy młyńskiej",
+    "response": "Architektura wyspy młyńskiej jest NIESAMOWITA",
     "timestamp": "2025-01-15T10:30:00",
     "conversation_length": 2
 }
@@ -106,24 +107,7 @@ GET /session/<session_id>
 ```
 Returns complete conversation history for a session.
 
-### 5. Delete Session
-```
-DELETE /session/<session_id>
-```
-Removes a session from memory.
-
-### 6. Clean Up Inactive Sessions
-```
-POST /sessions/cleanup
-Content-Type: application/json
-
-{
-    "timeout_minutes": 30
-}
-```
-Removes sessions inactive for longer than specified time.
-
-### 7. Get Statistics
+### 5. Get Statistics
 ```
 GET /stats
 ```
@@ -131,20 +115,7 @@ Returns API statistics including active sessions and available landmarks.
 
 ## Adding Your Documents
 
-Edit `sample_documents.py` and add your landmark information:
-
-```python
-SAMPLE_DOCUMENTS = {
-    "Landmark Name": """
-    Historical information about the landmark...
-    Multiple paragraphs describing history, architecture,
-    cultural significance, etc.
-    """,
-    "Another Landmark": """
-    More landmark information...
-    """
-}
-```
+Edit files in the `data directory`
 
 The system will automatically vectorize and index these documents for semantic search.
 
@@ -152,12 +123,10 @@ The system will automatically vectorize and index these documents for semantic s
 
 The system works with any persona string. Common examples:
 
-- `history enthusiast` - Interested in historical facts and dates
-- `architect` - Focused on architectural styles and design
-- `art lover` - Interested in cultural and artistic aspects
-- `student` - Looking for educational information
-- `general tourist` - Seeking basic information and highlights
-- `family with children` - Wanting kid-friendly explanations
+- "Jan Kazimierz"
+- "Luczniczka"
+- "Marian Rejewski", 
+- "Pan Twardowski"
 
 ## Example Usage
 
@@ -168,28 +137,10 @@ The system works with any persona string. Common examples:
 curl -X POST http://localhost:5000/chat \
   -H "Content-Type: application/json" \
   -d '{
-    "persona": "history enthusiast",
-    "landmark": "Cathedral Basilica of Our Lady",
-    "query": "What is the historical significance of this cathedral?"
+    "persona": "Jan Kazimierz",
+    "landmark": "Wyspa Młyńska",
+    "query": "Powiedz mi o architekturze wyspy młyńskiej"
   }'
-```
-
-### Using Python
-
-```python
-import requests
-import json
-
-url = "http://localhost:5000/chat"
-payload = {
-    "persona": "architect",
-    "landmark": "Leandro's Mill",
-    "query": "Tell me about the architectural style"
-}
-
-response = requests.post(url, json=payload)
-result = response.json()
-print(result['response'])
 ```
 
 ### Continuing a Conversation
@@ -200,9 +151,9 @@ curl -X POST http://localhost:5000/chat \
   -H "Content-Type: application/json" \
   -d '{
     "session_id": "the-returned-session-id",
-    "persona": "history enthusiast",
-    "landmark": "Cathedral Basilica of Our Lady",
-    "query": "What happened to it during World War II?"
+    "persona": "Jan Kazimierz",
+    "landmark": "Wyspa Młyńska",
+    "query": "Powiedz mi o architekturze wyspy młyńskiej"
   }'
 ```
 
@@ -210,12 +161,15 @@ curl -X POST http://localhost:5000/chat \
 
 In `.env`:
 
-- `OPENAI_API_KEY` - Your OpenAI API key (required)
-- `OPENAI_MODEL` - Model to use (default: gpt-3.5-turbo, can use gpt-4)
+- `LLM_PROVIDER` - openai/gemini/claude/ollama
+- `LLM_MODEL` - Model to use 
+- `OPENAI_API_KEY` - Your OpenAI API key (if used)
+- `GEMINI_API_KEY` - Your Gemini API key (if used)
+- `CLAUDE_API_KEY` - Your Claude API key (if used)
 - `DEBUG` - Enable debug mode (default: false)
 - `FLASK_ENV` - Environment type (development/production)
-- `MAX_TOKENS` - Maximum response length (default: 500)
-- `TEMPERATURE` - Response creativity (0-1, default: 0.7)
+- `MAX_TOKENS` - Maximum response length (default: 1000)
+- `TEMPERATURE` - Response creativity (0-1, default: 0.2)
 
 ## How It Works
 
@@ -245,24 +199,7 @@ In `.env`:
 - [ ] Integration with mapping/routing APIs
 - [ ] Image and video integration for landmarks
 
-## Troubleshooting
 
-### "OPENAI_API_KEY not configured"
-- Ensure `.env` file exists with valid API key
-- Restart the application after updating `.env`
-
-### "Landmark not found"
-- Check spelling in request matches SAMPLE_DOCUMENTS keys
-- Use `/landmarks` endpoint to see available landmarks
-
-### Slow responses
-- Check OpenAI API rate limits
-- Consider using a faster model (gpt-3.5-turbo vs gpt-4)
-- Increase TEMPERATURE for faster, less deterministic responses
-
-## License
-
-Part of the Hacknation project.
 
 ## Contact & Support
 

@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 COPY src/ ./src/
 COPY config/ ./config/
+COPY data/ ./data/
 
 # Create .env file from environment variables
 # (configuration will be passed as environment variables)

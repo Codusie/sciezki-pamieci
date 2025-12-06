@@ -6,6 +6,9 @@ Supports multiple concurrent users with different personae
 from typing import Dict, List, Optional
 from datetime import datetime
 import uuid
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class UserSession:
@@ -40,7 +43,7 @@ class UserSession:
             context += f"{msg['role']}: {msg['content']}\n"
         return context
 
-
+# TODO autoremove old sessions after inactivity
 class SessionManager:
     """Manages all active user sessions"""
     

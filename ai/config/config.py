@@ -22,7 +22,7 @@ class Config:
     OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
     
     # Common LLM Settings
-    MAX_TOKENS = int(os.getenv("MAX_TOKENS", 500))
-    TEMPERATURE = float(os.getenv("TEMPERATURE", 0.5))
+    MAX_TOKENS = int(os.getenv("MAX_TOKENS", 1000))
+    TEMPERATURE = float(os.getenv("TEMPERATURE", 0.2))
     
 config = Config()
