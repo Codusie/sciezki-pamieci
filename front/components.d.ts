@@ -16,6 +16,7 @@ declare module 'vue' {
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
+    MapMarker: typeof import('./src/components/MapMarker.vue')['default']
     Menubar: typeof import('primevue/menubar')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

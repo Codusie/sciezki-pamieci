@@ -42,6 +42,7 @@
         </a>
       </div>
     </LControl>
+
     <slot></slot>
   </LMap>
 </template>
@@ -75,9 +76,9 @@ $font-main: 'Inter', sans-serif;
 
 .map {
   &__line {
-    stroke: var(--main-color);
-    filter: drop-shadow(2px 0 0 var(--main-color-dark)) drop-shadow(-2px 0 0 var(--main-color-dark))
-      drop-shadow(0 2px 0 var(--main-color-dark)) drop-shadow(0 -2px 0 var(--main-color-dark));
+    stroke: var(--p-stone-600);
+    filter: drop-shadow(2px 0 0 var(--p-stone-200)) drop-shadow(-2px 0 0 var(--p-stone-200))
+      drop-shadow(0 2px 0 var(--p-stone-200)) drop-shadow(0 -2px 0 var(--p-stone-200));
   }
 
   &--rounded {
@@ -104,15 +105,6 @@ $font-main: 'Inter', sans-serif;
 
 .leaflet-control-attribution {
   display: none;
-}
-
-.leaflet-marker-icon {
-  border-radius: 50%;
-  height: 16px !important;
-  width: 16px !important;
-  background-color: var(--main-color);
-  border: 2px solid var(--main-color-dark);
-  z-index: 10000;
 }
 
 .leaflet-control-zoom {
