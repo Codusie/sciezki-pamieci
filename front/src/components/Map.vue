@@ -1,64 +1,75 @@
 <template>
-  <LMap
-    ref="map"
-    :max-zoom="17"
-    :min-zoom="2"
-    :zoom="zoom"
-    :center="center"
-    :options="{ zoomControl: false }"
-    :use-global-leaflet="false"
-    :no-blocking-animations="true"
-    class="map"
-    :class="rounded ? 'map--rounded' : ''"
-    @update:center="centerUpdated"
-  >
-    <LTileLayer
-      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      layer-type="base"
-      name="OpenStreetMap"
-    />
-    <LControlZoom position="topright" />
-    <LControl position="bottomright">
-      <div
-        class="absolute right-0 bottom-0 text-nowrap px-2 py-0.5 rounded-full bg-[var(--ui-bg)] text-gray-500 font-sans"
-      >
-        &copy;
-        <a
-          href="https://www.openstreetmap.org/copyright"
-          target="_blank"
-          rel="nofollow noopener"
-          class="text-neutral-600 dark:text-neutral-300 hover:underline"
+  <div :style="`--marker-size: ${size}`">
+    <LMap
+      ref="mapRef"
+      :max-zoom="18"
+      :min-zoom="2"
+      v-model:zoom="zoom"
+      :center="center"
+      :options="{ zoomControl: false }"
+      :use-global-leaflet="false"
+      :no-blocking-animations="true"
+      class="map"
+      :class="rounded ? 'map--rounded' : ''"
+      @update:center="centerUpdated"
+    >
+      <LTileLayer
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        layer-type="base"
+        name="OpenStreetMap"
+      />
+      <LControlZoom position="topright" />
+      <LControl position="bottomright">
+        <div
+          class="absolute right-0 bottom-0 text-nowrap px-2 py-0.5 rounded-full bg-[var(--ui-bg)] text-gray-500 font-sans"
         >
-          OpenStreetMap
-        </a>
-        |
-        <a
-          href="https://leafletjs.com"
-          target="_blank"
-          rel="nofollow noopener"
-          class="text-neutral-600 dark:text-neutral-300 hover:underline"
-        >
-          Leaflet
-        </a>
-      </div>
-    </LControl>
+          &copy;
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="nofollow noopener"
+            class="text-neutral-600 dark:text-neutral-300 hover:underline"
+          >
+            OpenStreetMap
+          </a>
+          |
+          <a
+            href="https://leafletjs.com"
+            target="_blank"
+            rel="nofollow noopener"
+            class="text-neutral-600 dark:text-neutral-300 hover:underline"
+          >
+            Leaflet
+          </a>
+        </div>
+      </LControl>
 
-    <slot></slot>
-  </LMap>
+      <slot></slot>
+    </LMap>
+  </div>
 </template>
 
 <script lang="ts" setup>
 import { LMap, LTileLayer, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet'
+import { computed, useTemplateRef } from 'vue'
 
-const {
-  zoom = 12,
-  center = [53.1235, 18.0084],
-  rounded = false,
-} = defineProps<{
-  zoom?: number
+const { center = [53.1235, 18.0084], rounded = false } = defineProps<{
   center?: [number, number]
   rounded?: boolean
 }>()
+
+const zoom = defineModel<number>('zoom', { default: 12 })
+
+const mapRef = useTemplateRef('mapRef')
+
+const size = computed(() => {
+  // Greater zoom -> larger marker size
+  if (zoom.value >= 16) return '50px'
+  if (zoom.value >= 14) return '35px'
+  if (zoom.value >= 12) return '25px'
+  if (zoom.value >= 10) return '15px'
+  return '10px'
+})
 
 const emit = defineEmits(['update:center'])
 const centerUpdated = (event: { lat: number; lng: number }) => {

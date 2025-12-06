@@ -1,6 +1,6 @@
 <template>
   <div class="choose-team">
-    <div class="choose-team__title">Wybierz drużynę do której dołączasz:</div>
+    <div class="choose-team__title">Wybierz swojego przewodnika:</div>
 
     <div class="choose-team__select">
       <div
@@ -50,12 +50,12 @@ const TEAMS = [
   },
   {
     key: 'luczniczka',
-    name: 'Łuczniczka',
+    name: 'Kazimierz Wielki',
     color: 'yellow',
   },
   {
     key: 'twardowski',
-    name: 'Twardowski',
+    name: 'Pan Twardowski',
     color: 'blue',
   },
 ] as const

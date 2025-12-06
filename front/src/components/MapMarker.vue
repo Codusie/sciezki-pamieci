@@ -1,7 +1,7 @@
 <template>
-  <LMarker :lat-lng="latLng" draggable>
+  <LMarker :lat-lng="latLng">
     <LIcon>
-      <img class="marker-icon" :src="imageUrl" alt="Map Marker" />
+      <img class="marker-icon" :src="imageUrl" :alt="`TODO`" />
     </LIcon>
   </LMarker>
 </template>
@@ -18,19 +18,21 @@ const { latLng, imageUrl } = defineProps<{
 <style lang="scss">
 .leaflet-marker-icon {
   border-radius: 50%;
-  height: 36px !important;
-  width: 36px !important;
+  height: calc(var(--marker-size) + 4px) !important;
+  width: calc(var(--marker-size) + 4px) !important;
   background-color: var(--p-yellow-200);
   border: 2px solid var(--p-yellow-600);
   z-index: 10000;
-  margin-left: -18px !important;
-  margin-top: -18px !important;
+  margin-left: calc(var(--marker-size) / -2) !important;
+  margin-top: calc(var(--marker-size) / -2) !important;
   overflow: hidden;
+  transition: 0.3s;
 }
 
 .marker-icon {
-  width: 32px !important;
-  height: 32px;
+  width: var(--marker-size) !important;
+  height: var(--marker-size);
   border-radius: 50%;
+  transition: 0.3s;
 }
 </style>
