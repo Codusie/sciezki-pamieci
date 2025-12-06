@@ -1,20 +1,20 @@
 <template>
-  <div class="choose-team">
-    <div class="choose-team__title">Wybierz swojego przewodnika:</div>
+  <div class="choose-guide">
+    <div class="choose-guide__title">Wybierz swojego przewodnika:</div>
 
-    <div class="choose-team__select">
+    <div class="choose-guide__select">
       <div
         v-for="team in TEAMS"
         :key="team.name"
-        class="single-team-button"
+        class="single-guide-button"
         tabindex="0"
-        :class="`single-team-button--${team.color}`"
+        :class="`single-guide-button--${team.color}`"
       >
-        <div class="single-team-button__content">
-          <div class="single-team-button__name">{{ team.name }}</div>
+        <div class="single-guide-button__content">
+          <div class="single-guide-button__name">{{ team.name }}</div>
 
           <Button
-            class="single-team-button__button"
+            class="single-guide-button__button"
             size="large"
             @click="emit('select', team.key as Team)"
             >Dołącz!</Button
@@ -23,7 +23,7 @@
           <img
             src="@/assets/images/rejewski.png"
             alt="Rejewski"
-            class="single-team-button__image"
+            class="single-guide-button__image"
           />
         </div>
       </div>
@@ -32,6 +32,7 @@
 </template>
 
 <script setup lang="ts">
+import { GUIDE_TO_COLOR_MAP } from '@/composables/useGuideColor'
 import type { Team } from '@/schema'
 
 defineProps<{
@@ -46,17 +47,17 @@ const TEAMS = [
   {
     key: 'rejewski',
     name: 'Rejewski',
-    color: 'red',
+    color: GUIDE_TO_COLOR_MAP['rejewski'],
   },
   {
-    key: 'luczniczka',
+    key: 'kazimierz_wielki',
     name: 'Kazimierz Wielki',
-    color: 'yellow',
+    color: GUIDE_TO_COLOR_MAP['kazimierz_wielki'],
   },
   {
     key: 'twardowski',
     name: 'Pan Twardowski',
-    color: 'blue',
+    color: GUIDE_TO_COLOR_MAP['twardowski'],
   },
 ] as const
 </script>
@@ -64,7 +65,7 @@ const TEAMS = [
 <style lang="scss" scoped>
 $skewDegree: 5deg;
 
-.choose-team {
+.choose-guide {
   overflow: hidden;
   background: linear-gradient(var(--p-blue-500) 49%, var(--p-red-600) 51%);
 
@@ -89,7 +90,7 @@ $skewDegree: 5deg;
   }
 }
 
-.single-team-button {
+.single-guide-button {
   width: 100%;
   height: 100%;
   transition: 0.3s;

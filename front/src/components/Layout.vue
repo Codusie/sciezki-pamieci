@@ -1,13 +1,15 @@
 <template>
   <div class="layout">
+    <GuideAvatar />
+
     <div class="content" :class="{ 'content--no-padding': isMap }">
       <slot />
     </div>
-    
+
     <nav class="mobile-nav">
-      <router-link 
-        v-for="item in items" 
-        :key="item.route" 
+      <router-link
+        v-for="item in items"
+        :key="item.route"
         :to="item.route"
         class="nav-item"
         active-class="nav-item--active"
@@ -22,16 +24,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import GuideAvatar from '@/components/GuideAvatar.vue'
 
-const route = useRoute();
-const isMap = computed(() => route.path === '/');
+const route = useRoute()
+const isMap = computed(() => route.path === '/')
 
 interface NavItem {
-  label: string;
-  route: string;
-  icon: string;
+  label: string
+  route: string
+  icon: string
 }
 
 const items: NavItem[] = [
@@ -61,7 +64,7 @@ const items: NavItem[] = [
   overflow-y: auto;
   padding-bottom: 100px; // Space for the floating nav
   padding-top: 2rem; // Space from top for non-map pages
-  
+
   &--no-padding {
     padding-bottom: 0;
     padding-top: 0;
@@ -81,7 +84,7 @@ const items: NavItem[] = [
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 
+  box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
     0 8px 10px -6px rgba(0, 0, 0, 0.05),
     0 0 0 1px rgba(255, 255, 255, 0.3) inset;
@@ -102,7 +105,7 @@ const items: NavItem[] = [
   border-radius: 1rem;
   position: relative;
   width: 80px;
-  
+
   &:hover {
     color: #64748b; // slate-500
   }
@@ -131,7 +134,7 @@ const items: NavItem[] = [
     .icon-container {
       transform: translateY(-2px);
     }
-    
+
     .nav-label {
       font-weight: 600;
       opacity: 1;

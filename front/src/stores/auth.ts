@@ -7,6 +7,7 @@ import type { Team } from '@/schema'
 export const useAuthStore = defineStore(
   'auth',
   () => {
+    const guide = ref<Team>()
     const accessToken = ref<string | null>(null)
     const isSessionError = ref(false)
 
@@ -15,8 +16,9 @@ export const useAuthStore = defineStore(
         const { data } = await httpService.POST('/users', { body: { team } })
         return data?.access_token
       },
-      onSuccess: (newToken) => {
+      onSuccess: (newToken, newGuide) => {
         accessToken.value = newToken ?? null
+        guide.value = newGuide
       },
       onError: (error) => {
         isSessionError.value = true
@@ -24,12 +26,7 @@ export const useAuthStore = defineStore(
       },
     })
 
-    return {
-      accessToken,
-      createNewSession,
-      isInitializingSession,
-      isSessionError,
-    }
+    return { guide, accessToken, createNewSession, isInitializingSession, isSessionError }
   },
   { persist: true },
 )

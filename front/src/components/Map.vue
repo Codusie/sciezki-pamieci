@@ -1,5 +1,11 @@
 <template>
-  <div :style="`--marker-size: ${size}`">
+  <div
+    :style="{
+      '--marker-size': size,
+      '--color-main': colorMain,
+      '--color-light': colorLight,
+    }"
+  >
     <LMap
       ref="mapRef"
       :max-zoom="18"
@@ -20,27 +26,27 @@
       />
       <LControlZoom position="topright" />
       <LControl position="bottomright">
-      <div class="map__attribution">
-        &copy;
-        <a
-          href="https://www.openstreetmap.org/copyright"
-          target="_blank"
-          rel="nofollow noopener"
-          class="map__attribution-link"
-        >
-          OpenStreetMap
-        </a>
-        |
-        <a
-          href="https://leafletjs.com"
-          target="_blank"
-          rel="nofollow noopener"
-          class="map__attribution-link"
-        >
-          Leaflet
-        </a>
-      </div>
-    </LControl>
+        <div class="map__attribution">
+          &copy;
+          <a
+            href="https://www.openstreetmap.org/copyright"
+            target="_blank"
+            rel="nofollow noopener"
+            class="map__attribution-link"
+          >
+            OpenStreetMap
+          </a>
+          |
+          <a
+            href="https://leafletjs.com"
+            target="_blank"
+            rel="nofollow noopener"
+            class="map__attribution-link"
+          >
+            Leaflet
+          </a>
+        </div>
+      </LControl>
 
       <slot></slot>
     </LMap>
@@ -48,6 +54,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useGuideColor } from '@/composables/useGuideColor'
 import { LMap, LTileLayer, LControlZoom, LControl } from '@vue-leaflet/vue-leaflet'
 import { computed, useTemplateRef } from 'vue'
 
@@ -73,6 +80,9 @@ const emit = defineEmits(['update:center'])
 const centerUpdated = (event: { lat: number; lng: number }) => {
   emit('update:center', event)
 }
+
+const colorMain = useGuideColor(600)
+const colorLight = useGuideColor(200)
 </script>
 
 <style lang="scss">

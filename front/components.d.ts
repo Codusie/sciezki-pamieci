@@ -13,7 +13,9 @@ declare module 'vue' {
   export interface GlobalComponents {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
     Button: typeof import('primevue/button')['default']
+    ChooseGuide: typeof import('./src/components/ChooseGuide.vue')['default']
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
+    GuideAvatar: typeof import('./src/components/GuideAvatar.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
     MapMarker: typeof import('./src/components/MapMarker.vue')['default']

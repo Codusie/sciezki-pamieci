@@ -17,7 +17,7 @@ const store = useAuthStore()
 const router = useRouter()
 
 onBeforeMount(() => {
-  if (!store.accessToken) router.push({ name: 'choose-your-team' })
+  if (!store.accessToken) router.push({ name: 'choose-your-guide' })
 })
 </script>
 

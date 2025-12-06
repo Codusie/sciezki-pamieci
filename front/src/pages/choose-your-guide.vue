@@ -1,9 +1,9 @@
 <template>
-  <ChooseTeam @select="onTeamSelect" :loading="store.isInitializingSession" />
+  <ChooseGuide @select="onTeamSelect" :loading="store.isInitializingSession" />
 </template>
 
 <script setup lang="ts">
-import ChooseTeam from '@/components/ChooseTeam.vue'
+import ChooseGuide from '@/components/ChooseGuide.vue'
 import type { Team } from '@/schema'
 
 import { useAuthStore } from '@/stores/auth'

@@ -19,9 +19,9 @@ const router = createRouter({
       path: '/history',
     },
     {
-      name: 'choose-your-team',
-      component: () => import('@/pages/choose-your-team.vue'),
-      path: '/choose-your-team',
+      name: 'choose-your-guide',
+      component: () => import('@/pages/choose-your-guide.vue'),
+      path: '/choose-your-guide',
     },
   ],
 })
