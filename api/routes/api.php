@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Controllers\LandmarkController;
+use App\Http\Controllers\ReelController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -10,3 +11,4 @@ use Illuminate\Support\Facades\Route;
 Route::post('/users', [UserController::class, 'store']);
 
 Route::get('/landmarks', [LandmarkController::class, 'index']);
+Route::get('/landmarks/{landmark}/reels', [ReelController::class, 'index']);

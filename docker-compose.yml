@@ -5,7 +5,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./front:/usr/src/app
+      - ./front:/usr/src/app/:Z
       - guest_node_modules:/usr/src/app/node_modules
     environment:
       NODE_ENV: development

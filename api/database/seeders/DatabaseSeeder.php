@@ -26,6 +26,7 @@ final class DatabaseSeeder extends Seeder
 
         $this->call([
             LandmarkSeeder::class,
+            ReelSeeder::class,
         ]);
     }
 }

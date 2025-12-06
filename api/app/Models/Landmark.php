@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 final class Landmark extends Model
 {
@@ -20,4 +21,9 @@ final class Landmark extends Model
         'thumbnail_url',
         'map_url',
     ];
+    
+    public function reels(): HasMany
+    {
+        return $this->hasMany(Reel::class);
+    }
 }
