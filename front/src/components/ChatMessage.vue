@@ -289,9 +289,10 @@ const formattedMessage = computed(() => {
     box-shadow: var(--p-shadow-1);
     transition: all 0.2s ease;
 
-    &:hover {
+    /* Removed hover for mobile optimization */
+    /* &:hover {
       box-shadow: var(--p-shadow-2);
-    }
+    } */
 
     &.user-card {
       background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-600));

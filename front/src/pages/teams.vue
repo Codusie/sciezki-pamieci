@@ -101,7 +101,7 @@ const { data, isLoading } = useQuery({
 })
 
 const sortedTeams = computed(() => {
-  if (!data.value) return []
+  if (!data.value || !Array.isArray(data.value)) return []
   // Create a copy and sort
   return [...data.value].sort((a, b) => b.visits - a.visits)
 })
@@ -137,7 +137,7 @@ const getInitials = (key: string) => {
   min-height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(180deg, var(--p-surface-0) 0%, var(--p-surface-50) 100%);
+  background: var(--p-surface-ground);
 }
 
 .title {
@@ -145,9 +145,7 @@ const getInitials = (key: string) => {
   font-size: 2rem;
   font-weight: 800;
   margin-bottom: 3rem;
-  background: linear-gradient(90deg, #f59e0b, #ef4444, #3b82f6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: #1a1a1a; /* Forced dark color for contrast */
   letter-spacing: -1px;
 }
 
@@ -169,10 +167,11 @@ const getInitials = (key: string) => {
   max-width: 120px;
   position: relative;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  &:hover {
+
+  /* Removed hover for mobile optimization */
+  /* &:hover {
     transform: translateY(-5px);
-  }
+  } */
 }
 
 .content {
@@ -195,18 +194,18 @@ const getInitials = (key: string) => {
   border-radius: 50%;
   border: 3px solid;
   overflow: hidden;
-  background: white;
+  background: var(--p-surface-0);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  
+  box-shadow: var(--p-shadow-2);
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
-  
+
   .placeholder {
     width: 100%;
     height: 100%;
@@ -233,15 +232,15 @@ const getInitials = (key: string) => {
   justify-content: center;
   font-weight: bold;
   font-size: 0.8rem;
-  border: 2px solid white;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  border: 2px solid var(--p-surface-0);
+  box-shadow: var(--p-shadow-1);
 }
 
 .name {
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: var(--p-surface-700);
+  color: var(--p-text-color);
   line-height: 1.2;
 }
 
@@ -253,25 +252,25 @@ const getInitials = (key: string) => {
 
 .bar {
   width: 100%;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  box-shadow: inset 0 -20px 40px rgba(0,0,0,0.1);
+  border-top-left-radius: var(--p-border-radius);
+  border-top-right-radius: var(--p-border-radius);
+  opacity: 0.9;
 }
 
 /* Specific styling for places */
 .place-1 {
   z-index: 2;
-  
+
   .avatar {
     width: 80px;
     height: 80px;
     border-width: 4px;
   }
-  
+
   .bar {
     height: 160px;
   }
-  
+
   .badge {
     width: 30px;
     height: 30px;

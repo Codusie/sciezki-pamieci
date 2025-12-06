@@ -58,7 +58,7 @@ const items: NavItem[] = [
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: #f8fafc; // slate-50
+  background-color: var(--p-surface-ground);
 }
 
 .content {
@@ -86,13 +86,11 @@ const items: NavItem[] = [
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.05),
-    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+  box-shadow: var(--p-shadow-4);
   z-index: 2000;
   max-width: 500px;
   margin: 0 auto;
+  border: 1px solid var(--p-surface-200);
 }
 
 .nav-item {
@@ -101,16 +99,17 @@ const items: NavItem[] = [
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  color: #94a3b8; // slate-400
+  color: var(--p-text-muted-color);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0.5rem 1rem;
   border-radius: 1rem;
   position: relative;
   width: 80px;
 
-  &:hover {
-    color: #64748b; // slate-500
-  }
+  /* Removed hover for mobile optimization */
+  /* &:hover {
+    color: var(--p-text-color);
+  } */
 
   .icon-container {
     position: relative;
@@ -131,7 +130,7 @@ const items: NavItem[] = [
   }
 
   &--active {
-    color: #0f172a; // slate-900
+    color: var(--p-primary-color);
 
     .icon-container {
       transform: translateY(-2px);
@@ -150,7 +149,8 @@ const items: NavItem[] = [
       transform: translate(-50%, -50%);
       width: 60px;
       height: 60px;
-      background: radial-gradient(circle, rgba(148, 163, 184, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+      background: radial-gradient(circle, var(--p-primary-500) 0%, rgba(255, 255, 255, 0) 70%);
+      opacity: 0.1;
       border-radius: 50%;
       z-index: 0;
     }

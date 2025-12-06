@@ -120,9 +120,10 @@ $font-main: 'Inter', sans-serif;
     color: #525252;
     text-decoration: none;
 
-    &:hover {
+    /* Removed hover for mobile optimization */
+    /* &:hover {
       text-decoration: underline;
-    }
+    } */
 
     .dark & {
       color: #d4d4d4;
@@ -174,9 +175,10 @@ $font-main: 'Inter', sans-serif;
   background: $color-dark-bg;
   color: white;
 
-  &:hover {
+  /* Removed hover for mobile optimization */
+  /* &:hover {
     background: $color-dark;
-  }
+  } */
 }
 
 .leaflet-control-zoom-in {

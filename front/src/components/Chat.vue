@@ -328,10 +328,11 @@ onMounted(() => {
         min-width: 3rem;
         transition: all 0.2s ease;
 
-        &:enabled:hover {
+        /* Removed hover for mobile optimization */
+        /* &:enabled:hover {
           background: var(--p-primary-600);
           transform: translateY(-1px);
-        }
+        } */
 
         &:disabled {
           opacity: 0.6;

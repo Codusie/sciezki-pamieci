@@ -91,21 +91,17 @@ const getInitialPicture = (landmark: Landmark) => {
   padding: 2rem;
   border-radius: var(--p-border-radius-lg);
   border: 1px solid var(--p-surface-border);
-  box-shadow: var(--p-shadow-2);
+  box-shadow: var(--p-shadow-1);
 
   .landmark-title {
     margin-bottom: 1rem;
 
     h1 {
       margin: 0 0 0.5rem 0;
-      color: var(--p-text-color);
+      color: #1a1a1a; /* Forced dark color for contrast */
       font-size: 2.5rem;
       font-weight: 700;
       line-height: 1.2;
-      background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-700));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
     }
 
     .landmark-description {
@@ -123,9 +119,10 @@ const getInitialPicture = (landmark: Landmark) => {
     gap: 0.5rem;
     color: var(--p-text-muted-color);
     font-size: 0.95rem;
+    margin-top: 1rem;
 
     i {
-      color: var(--p-primary-500);
+      color: var(--p-primary-color);
       font-size: 1.1rem;
     }
   }
@@ -147,6 +144,7 @@ const getInitialPicture = (landmark: Landmark) => {
     justify-content: center;
     border: 1px dashed var(--p-surface-300);
     background: var(--p-surface-50);
+    box-shadow: none;
 
     .placeholder-content {
       display: flex;

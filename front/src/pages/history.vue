@@ -70,8 +70,7 @@ const formatFullDate = (dateString: string) => {
   margin: 0 auto;
   padding: 4rem 2rem;
   min-height: 100vh;
-  font-family: 'Roboto', sans-serif;
-  color: #44403c; // stone-700
+  color: var(--p-text-color);
 }
 
 .header {
@@ -81,17 +80,15 @@ const formatFullDate = (dateString: string) => {
 
   .title {
     font-size: 3.5rem;
-    font-weight: 300;
+    font-weight: 700;
     letter-spacing: -1px;
     margin: 0;
-    background: linear-gradient(135deg, #57534e 0%, #a8a29e 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #1a1a1a; /* Forced dark color for contrast */
   }
 
   .subtitle {
     font-size: 1.2rem;
-    color: #78716c; // stone-500
+    color: var(--p-text-muted-color);
     margin-top: 1rem;
     font-weight: 300;
   }
@@ -110,9 +107,9 @@ const formatFullDate = (dateString: string) => {
   :deep(.p-timeline-event-separator) {
     align-items: center;
   }
-  
+
   :deep(.p-timeline-event-connector) {
-    background-color: #e7e5e4; // stone-200
+    background-color: var(--p-surface-200);
     width: 2px;
   }
 }
@@ -121,37 +118,37 @@ const formatFullDate = (dateString: string) => {
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background: #fff;
-  border: 2px solid #d6d3d1; // stone-300
+  background: var(--p-surface-0);
+  border: 2px solid var(--p-surface-300);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #78716c; // stone-500
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  color: var(--p-text-muted-color);
+  box-shadow: var(--p-shadow-1);
   z-index: 1;
   transition: all 0.3s ease;
 }
 
 .timeline-card {
-  background: white;
-  border-radius: 1rem;
+  background: var(--p-surface-0);
+  border-radius: var(--p-border-radius-lg);
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  box-shadow: var(--p-shadow-2);
   cursor: pointer;
   margin-bottom: 2rem;
   margin-right: 1rem;
-  border: 1px solid #f5f5f4; // stone-100
-  
+  border: 1px solid var(--p-surface-200);
+
   // Animation base state
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, transform 0.3s ease;
-  
+
   &.fadein {
     opacity: 1;
     transform: translateY(0);
   }
-  
+
   &.fadeout {
     opacity: 0;
     transform: translateY(30px);
@@ -178,22 +175,22 @@ const formatFullDate = (dateString: string) => {
     margin: 0;
     font-size: 1.5rem;
     font-weight: 600;
-    color: #292524; // stone-800
+    color: var(--p-text-color);
     line-height: 1.3;
   }
 
   .visit-time {
     margin-top: 0.5rem;
     font-size: 0.9rem;
-    color: #a8a29e; // stone-400
+    color: var(--p-text-muted-color);
   }
 }
 
 .empty-state {
   text-align: center;
-  color: #a8a29e;
+  color: var(--p-text-muted-color);
   margin-top: 4rem;
-  
+
   p {
     margin-top: 1rem;
     font-size: 1.2rem;
@@ -216,7 +213,7 @@ const formatFullDate = (dateString: string) => {
   .history-container {
     padding: 2rem 1rem;
   }
-  
+
   .header .title {
     font-size: 2.5rem;
   }
@@ -225,7 +222,7 @@ const formatFullDate = (dateString: string) => {
     :deep(.p-timeline-event-opposite) {
       display: none;
     }
-    
+
     :deep(.p-timeline-event-content) {
       padding-left: 1.5rem;
       padding-right: 0;
