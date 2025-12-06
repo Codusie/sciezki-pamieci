@@ -8,6 +8,7 @@ import App from './App.vue'
 import router from './router'
 
 import '@/assets/styles/index.scss'
+import 'primeicons/primeicons.css'
 import { Theme } from './theme'
 
 const app = createApp(App)
