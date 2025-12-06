@@ -9,6 +9,7 @@ import router from './router'
 
 import '@/assets/styles/index.scss'
 import 'primeicons/primeicons.css'
+import 'leaflet/dist/leaflet.css'
 import { Theme } from './theme'
 
 const app = createApp(App)

@@ -18,7 +18,9 @@
   "dependencies": {
     "@primeuix/themes": "^2.0.2",
     "@tanstack/vue-query": "^5.92.1",
+    "@vue-leaflet/vue-leaflet": "^0.10.1",
     "@vueuse/core": "^14.1.0",
+    "leaflet": "^1.9.4",
     "openapi-fetch": "^0.15.0",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",

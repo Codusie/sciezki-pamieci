@@ -6,7 +6,12 @@ const router = createRouter({
     {
       name: 'index',
       component: () => import('@/pages/index.vue'),
-      path: '/index',
+      path: '/',
+    },
+    {
+      name: 'history',
+      component: () => import('@/pages/history.vue'),
+      path: '/history',
     },
     {
       name: 'choose-your-team',

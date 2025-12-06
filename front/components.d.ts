@@ -14,7 +14,13 @@ declare module 'vue' {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
     Button: typeof import('primevue/button')['default']
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
+    Layout: typeof import('./src/components/Layout.vue')['default']
+    Map: typeof import('./src/components/Map.vue')['default']
+    Menubar: typeof import('primevue/menubar')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface GlobalDirectives {
+    Ripple: typeof import('primevue/ripple')['default']
   }
 }
