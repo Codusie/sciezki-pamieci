@@ -97,8 +97,9 @@ def create_app():
             
             # Get conversation history
             logger.info(f"Fetching conversation history for session ID: {session.session_id}")
+            conversation_context = session.get_recent_context(5)
             conversation_history = session.get_history()
-            
+
             # Generate response
             logger.info(f"Generating response for persona: {persona}, landmark: {landmark}")
             response_text = generate_landmark_response(
@@ -108,6 +109,7 @@ def create_app():
                 },
                 user_query=query,
                 relevant_context=relevant_context,
+                conversation_context=conversation_context,
                 conversation_history=conversation_history
             )
             if response_text is None:

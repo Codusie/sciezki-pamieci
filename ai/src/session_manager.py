@@ -27,6 +27,7 @@ class UserSession:
         self.conversation_history.append({
             "role": role,
             "content": content,
+            "landmark": self.landmark,
             "timestamp": datetime.now().isoformat()
         })
         self.last_activity = datetime.now()
@@ -52,6 +53,7 @@ class SessionManager:
         
     def create_session(self, session_id: Optional[str], persona: str, landmark: str) -> UserSession:
         """Create a new session or return existing one"""
+        # self.cleanup_inactive_sessions(30) - if we want to cleanup every time
         if not session_id:
             session_id = str(uuid.uuid4())
             
