@@ -1,12 +1,19 @@
-<script setup lang="ts"></script>
-
 <template>
   <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <p>accessToken: {{ accessToken }}</p>
+  {{ isSessionError }}
   <Button>Button</Button>
 </template>
+
+<script setup lang="ts">
+import { onBeforeMount } from 'vue'
+import { useAuthStore } from './stores/auth'
+
+const { accessToken, initializeSession, isSessionError } = useAuthStore()
+
+onBeforeMount(() => {
+  initializeSession()
+})
+</script>
 
 <style scoped lang="scss"></style>
