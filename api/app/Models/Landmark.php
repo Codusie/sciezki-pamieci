@@ -21,7 +21,7 @@ final class Landmark extends Model
         'thumbnail_url',
         'map_url',
     ];
-    
+
     public function reels(): HasMany
     {
         return $this->hasMany(Reel::class);

@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Reel;
 use App\Models\Landmark;
+use App\Models\Reel;
+use Illuminate\Database\Seeder;
 
-class ReelSeeder extends Seeder
+final class ReelSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +17,7 @@ class ReelSeeder extends Seeder
     {
         // make 3-5 reels for every landmark
         foreach (Landmark::all() as $landmark) {
-            Reel::factory(rand(3, 5))->create([
+            Reel::factory(mt_rand(3, 5))->create([
                 'landmark_id' => $landmark->id,
             ]);
         }

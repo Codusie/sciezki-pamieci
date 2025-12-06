@@ -1,12 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Landmark;
-use App\Models\Reel;
 
-class ReelController
+final class ReelController
 {
     public function index(Landmark $landmark)
     {

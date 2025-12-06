@@ -17,5 +17,6 @@ final class User extends Model
 
     protected $fillable = [
         'name',
+        'team',
     ];
 }

@@ -2,8 +2,12 @@
 
 declare(strict_types=1);
 
+use App\Enums\Team;
+
 it('returns an access token on POST /api/users', function (): void {
-    $response = $this->postJson('/api/users');
+    $response = $this->postJson('/api/users', [
+        'team' => Team::Twardowski->value,
+    ]);
 
     $response->assertOk();
     $response->assertJsonStructure(['access_token']);
@@ -13,4 +17,8 @@ it('returns an access token on POST /api/users', function (): void {
     expect($token)->toBeString();
     expect($token)->not->toBe('');
     expect($token)->toContain('|');
+
+    $this->assertDatabaseHas('users', [
+        'team' => Team::Twardowski->value,
+    ]);
 });
