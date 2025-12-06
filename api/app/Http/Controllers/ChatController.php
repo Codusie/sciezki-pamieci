@@ -22,30 +22,30 @@ final class ChatController
         /** @var User $user */
         $user = Auth::user();
         $team = $user->team;
-        $url = Config::get('app.chat_ai_url') . '/session/' . $user->id;
+        $url = Config::get('app.chat_ai_url') . '/session/session_' . $user->id;
 
-        $response = Http::get($url)->json();
+        $response = Http::get($url);
 
-        // $responses = array_map(fn($item) => [
-        //     'sender' => $item['sender'],
-        //     'message' => $item['response'],
-        // ], $response);
+        $history = $response->json();
 
-        print_r($response);
+        $history = $history['conversation_history'] ?? null;
 
-        if ($response === null) {
+        if ($history === null) {
             throw new Exception('No response from AI');
         }
 
-        // $responses = array_map(fn($item) => [
-        //     'sender' => $item['sender'],
-        //     'message' => $item['response'],
-        // ], $response);
+        $responses = array_map(fn($item) => [
+            'sender' => match ($item['role']) {
+                'user' => CharMessageSender::User,
+                'assistant' => CharMessageSender::Agent,
+            },
+            'message' => $item['content'],
+            'landmark' => $item['landmark'],
+        ], $history);
 
-        // return ChatResponseResource::collection([
-        //     'sender' => CharMessageSender::Agent,
-        //     'message' => $reply,
-        // ]);
+        $responses = array_filter($responses, fn($item) => $item['landmark'] === $landmark->name);
+
+        return Response::json($responses);
     }
 
     public function sendMessage(ChatMessageRequest $request, Landmark $landmark): JsonResponse
@@ -55,22 +55,26 @@ final class ChatController
         $team = $user->team;
         $url = Config::get('app.chat_ai_url') . '/chat';
 
+
         $response = Http::post($url, [
-            'session_id' => $user->id,
+            'session_id' => 'session_' . $user->id,
             'persona' => $team,
             'landmark' => $landmark->name,
             'query' => $request->message,
         ]);
 
-        $reply = $response->json()['response'] ?? null;
+        $json = $response->json();
+
+        $reply = $json['response'] ?? null;
 
         if ($reply === null) {
             throw new Exception('No response from AI');
         }
 
         return Response::json([
-            'sender' => CharMessageSender::Agent->value,
+            'sender' => CharMessageSender::Agent,
             'message' => $reply,
+            'landmark' => $landmark->name,
         ]);
     }
 }
