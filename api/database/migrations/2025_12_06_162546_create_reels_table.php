@@ -18,6 +18,13 @@ return new class extends Migration {
             $table->foreignId('landmark_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
+
+        Schema::create('visits', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('landmark_id')->constrained()->cascadeOnDelete();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -26,5 +33,6 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::dropIfExists('reels');
+        Schema::dropIfExists('visits');
     }
 };
