@@ -45,6 +45,11 @@ const items: NavItem[] = [
     route: '/history',
     icon: 'pi pi-history',
   },
+  {
+    label: 'Ranking',
+    route: '/teams',
+    icon: 'pi pi-users',
+  },
 ]
 </script>
 

@@ -19,6 +19,11 @@ const router = createRouter({
       path: '/history',
     },
     {
+      name: 'teams',
+      component: () => import('@/pages/teams.vue'),
+      path: '/teams',
+    },
+    {
       name: 'choose-your-guide',
       component: () => import('@/pages/choose-your-guide.vue'),
       path: '/choose-your-guide',

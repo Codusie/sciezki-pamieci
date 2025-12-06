@@ -121,9 +121,8 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** ChatResponseResource */
-        ChatResponseResource: {
-            sender: string;
+        /** ChatMessageRequest */
+        ChatMessageRequest: {
             message: string;
         };
         /** Landmark */
@@ -237,15 +236,12 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Array of items */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: string[];
-                    };
+                    "application/json": Record<string, never>;
                 };
             };
             401: components["responses"]["AuthenticationException"];
@@ -262,21 +258,23 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChatMessageRequest"];
+            };
+        };
         responses: {
-            /** @description `ChatResponseResource` */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        data: components["schemas"]["ChatResponseResource"];
-                    };
+                    "application/json": Record<string, never>;
                 };
             };
             401: components["responses"]["AuthenticationException"];
             404: components["responses"]["ModelNotFoundException"];
+            422: components["responses"]["ValidationException"];
         };
     };
     "landmark.index": {
