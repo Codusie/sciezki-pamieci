@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\EventApiController;
 use App\Http\Controllers\GuestApiController;
 use App\Http\Controllers\PhotoApiController;
