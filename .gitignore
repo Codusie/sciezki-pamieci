@@ -1,1 +1,6 @@
 .DS_Store
+ai/venv
+.env
+notebooks/
+__pycache__/
+.vscode/

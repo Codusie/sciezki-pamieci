@@ -1,0 +1,21 @@
+Flask
+Flask-CORS
+python-dotenv
+numpy
+scikit-learn
+requests
+
+# LLM Providers (install as needed for your use case)
+# OpenAI / GPT models
+openai
+
+# Google Gemini
+google-generativeai
+
+# Anthropic Claude
+anthropic
+
+# Ollama is accessed via HTTP API (requests already included above)
+
+
+gunicorn

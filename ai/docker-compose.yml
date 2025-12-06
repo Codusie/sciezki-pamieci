@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  bydgoszcz-api:
+    build: .
+    container_name: bydgoszcz-tour-guide
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+    environment:
+      - LLM_MODEL=${LLM_MODEL}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DEBUG=false
+      - FLASK_ENV=production
+      - MAX_TOKENS=1000
+      - TEMPERATURE=0.5
+    
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # Optional: Redis for session caching (future enhancement)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: bydgoszcz-redis
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+
+#volumes:
+  # Optional: for persistent logs or data
+  # bydgoszcz-data:
+
+networks:
+  default:
+    name: bydgoszcz-network
