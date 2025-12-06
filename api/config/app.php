@@ -57,6 +57,8 @@ return [
 
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
 
+    'chat_ai_url' => env('CHAT_AI_URL', 'http://bydgoszcz-ai:5000'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
