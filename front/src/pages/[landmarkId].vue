@@ -53,7 +53,7 @@ import Card from 'primevue/card'
 import { useLandmark } from '@/composables/useLandmark'
 import { useChat } from '@/composables/useChat'
 import { useAuthStore } from '@/stores/auth'
-import { computed, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import type { components } from '@/schema'
 import type { Team } from '@/schema'
@@ -65,6 +65,15 @@ const authStore = useAuthStore()
 const landmarkId = computed(() => Number(route.params.landmarkId))
 const { data, isLoading } = useLandmark(landmarkId)
 const newMessage = ref('')
+
+const getInitialPicture = (landmark?: Landmark) => {
+  return landmark?.thumbnail_url
+}
+
+// Mock function to generate initial message based on landmark data
+const getInitialMessage = (landmark?: Landmark) => {
+  return `Welcome to ${landmark?.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`
+}
 
 // Generate guide name based on selected team
 const getGuideName = (team?: Team) => {
@@ -79,54 +88,24 @@ const getGuideName = (team?: Team) => {
 const guideName = computed(() => getGuideName(authStore.guide))
 
 // Chat functionality
-const chat = computed(() => {
-  if (!data.value) return null
-  return useChat(
-    landmarkId.value,
-    getInitialMessage(data.value)!,
-    getInitialPicture(data.value)!,
-    guideName.value,
-  )
-})
+const chat = useChat(
+  landmarkId.value,
+  getInitialMessage(data.value),
+  guideName.value,
+  getInitialPicture(data.value),
+)
 
 const handleSendMessage = () => {
-  if (chat.value && newMessage.value.trim()) {
-    chat.value.sendMessage(newMessage.value)
+  if (chat && newMessage.value.trim()) {
+    chat.sendMessage(newMessage.value)
     newMessage.value = ''
-    chat.value.scrollToBottom()
+    chat.scrollToBottom()
   }
 }
 
-// Connect chat when data is available
-watch(
-  chat,
-  (newChat) => {
-    if (newChat) {
-      newChat.connect()
-    }
-  },
-  { immediate: true },
-)
-
-// Mock function to generate initial message based on landmark data
-const getInitialMessage = (landmark: Landmark) => {
-  const messages = [
-    `Welcome to ${landmark.name}! I'm your digital guide and I'm here to help you discover the fascinating stories and secrets of this remarkable place.`,
-    `Hello! I'm excited to share the rich history and unique features of ${landmark.name} with you. What would you like to know about this incredible landmark?`,
-    `Greetings, explorer! ${landmark.name} has so many wonderful stories to tell. I'm here to be your guide through its history, architecture, and cultural significance.`,
-    `Welcome! You've arrived at one of the most interesting places - ${landmark.name}. I have lots of fascinating information to share with you about this location.`,
-  ]
-
-  // Simple hash to get consistent message for same landmark
-  const hash = landmark.id % messages.length
-  return messages[hash]
-}
-
-// Mock function to get initial picture
-const getInitialPicture = (landmark: Landmark) => {
-  // Use the thumbnail_url from landmark data or fallback to placeholder
-  return landmark.thumbnail_url || `https://picsum.photos/400/300?random=${landmark.id}`
-}
+onBeforeMount(() => {
+  chat.connect()
+})
 </script>
 
 <style lang="scss" scoped>

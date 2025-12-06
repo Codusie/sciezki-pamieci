@@ -74,24 +74,28 @@ const addNewLine = () => {
 <style lang="scss" scoped>
 .chat-input-fixed {
   position: fixed;
-  bottom: 80px; // Above navbar height
-  left: 0;
-  right: 0;
-  z-index: 100;
-  background: var(--p-surface-0);
-  border-top: 1px solid var(--p-surface-border);
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  bottom: 2.5rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  z-index: 2000;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.05),
+    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+  max-width: 500px;
+  margin: 0 auto;
 
   .input-card {
     border: none;
-    border-radius: 0;
+    border-radius: 1rem;
     box-shadow: none;
     background: transparent;
-    margin: 0 auto;
-    max-width: 1200px;
 
     :deep(.p-card-content) {
-      padding: 1rem 2rem;
+      padding: 1rem 1.5rem;
     }
 
     .input-container {
@@ -101,27 +105,49 @@ const addNewLine = () => {
 
       .chat-input {
         flex: 1;
-        border-radius: var(--p-border-radius) 0 0 var(--p-border-radius);
+        border-radius: 0.75rem 0 0 0.75rem;
         font-size: 0.95rem;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.2);
+        color: #0f172a;
+        padding: 0.75rem 1rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
         &:focus {
-          border-color: var(--p-primary-color);
-          box-shadow: 0 0 0 1px var(--p-primary-color);
+          border-color: rgba(59, 130, 246, 0.5);
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          background: rgba(255, 255, 255, 1);
+        }
+
+        &:disabled {
+          background: rgba(248, 250, 252, 0.8);
+          color: #94a3b8;
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+          opacity: 0.8;
         }
       }
 
       .send-button {
-        border-radius: 0 var(--p-border-radius) var(--p-border-radius) 0;
+        border-radius: 0 0.75rem 0.75rem 0;
         min-width: 3rem;
-        transition: all 0.2s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: #3b82f6;
+        border-color: #3b82f6;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
 
         &:enabled:hover {
-          background: var(--p-primary-600);
+          background: #2563eb;
           transform: translateY(-1px);
+          box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
         }
 
         &:disabled {
-          opacity: 0.6;
+          opacity: 0.5;
+          background: #94a3b8;
+          border-color: #94a3b8;
         }
       }
 
@@ -139,6 +165,10 @@ const addNewLine = () => {
 // Responsive design
 @media (max-width: 768px) {
   .chat-input-fixed {
+    bottom: 2rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    
     .input-card :deep(.p-card-content) {
       padding: 0.75rem 1rem;
     }

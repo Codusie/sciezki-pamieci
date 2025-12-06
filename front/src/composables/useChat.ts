@@ -4,8 +4,8 @@ import type { ChatMessage } from '@/types/chat'
 export const useChat = (
   landmarkId: number,
   initialMessage: string,
-  initialPicture: string,
   guideName: string,
+  initialPicture?: string,
 ) => {
   const messages = ref<ChatMessage[]>([])
   const isTyping = ref(false)
@@ -28,7 +28,7 @@ export const useChat = (
       type: 'image',
     }
 
-    messages.value.push(initialImageMessage)
+    if (initialPicture) messages.value.push(initialImageMessage)
 
     // Automatically send initial user message (hidden) to trigger guide response
     setTimeout(() => {
