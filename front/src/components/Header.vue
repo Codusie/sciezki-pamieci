@@ -1,6 +1,6 @@
 <template>
   <header class="header">
-    <Button v-if="back" @click="$router.go(-1)">
+    <Button v-if="back" @click="onBack">
       <i class="pi pi-arrow-left"></i>
     </Button>
     <Icon v-if="icon" :icon="icon" />
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import Button from './Button.vue'
 import Icon from './Icon.vue'
+import { useRouter } from 'vue-router'
 
 interface Props {
   title: string
@@ -26,11 +27,17 @@ interface Props {
   back?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   back: false,
 })
 
-const emit = defineEmits<{ back: [] }>()
+const router = useRouter()
+
+const onBack = () => {
+  const hasBack = !!(window.history.state && window.history.state.back) || window.history.length > 1
+  if (hasBack) router.back()
+  else router.replace('/')
+}
 </script>
 
 <style lang="scss" scoped>

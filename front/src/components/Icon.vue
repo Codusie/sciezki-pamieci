@@ -6,11 +6,11 @@
 
 <script lang="ts" setup>
 type Props = {
-  icon: string,
+  icon: string
   soft?: boolean
-};
+}
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   soft: false,
 })
 </script>
