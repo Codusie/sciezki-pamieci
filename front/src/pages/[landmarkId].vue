@@ -17,6 +17,7 @@
           <Chat
             v-if="landmark && chat"
             :messages="chat.messages.value"
+            :guide-name="guideName"
             :is-typing="chat.isTyping.value"
             :is-connected="chat.isConnected.value"
           />
@@ -63,22 +64,18 @@ const landmarkId = computed(() => Number(route.params.landmarkId))
 const { data: landmark, isLoading } = useLandmark(landmarkId)
 const newMessage = ref('')
 
-// Generate guide name based on selected team
-const getGuideName = (team?: Team) => {
+const guideName = computed(() => {
   const guideNames: Record<Team, string> = {
     rejewski: 'Marian Rejewski',
     kazimierz_wielki: 'Król Kazimierz Wielki',
     twardowski: 'Pan Twardowski',
   }
-  return team ? guideNames[team] : 'Virtual Guide'
-}
-
-const guideName = computed(() => getGuideName(authStore.guide))
+  return authStore.guide ? guideNames[authStore.guide] : 'Virtual Guide'
+})
 
 // Chat functionality
 const chat = useChat(
-  landmarkId.value,
-  guideName.value,
+  landmarkId,
   computed(() => landmark.value?.thumbnail_url),
 )
 

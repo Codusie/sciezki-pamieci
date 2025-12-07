@@ -3,17 +3,54 @@ import type { ChatMessage } from '@/types/chat'
 import { useMutation } from '@tanstack/vue-query'
 import { httpService } from '@/api'
 
+const createChatMessage = (
+  message: string,
+  author: 'user' | 'guide',
+  createdAt?: Date,
+): ChatMessage => ({
+  id: `user-${createdAt?.getTime() ?? Date.now()}`,
+  author,
+  message,
+  timestamp: createdAt ?? new Date(),
+  type: 'text',
+})
+
 export const useChat = (
-  landmarkId: number,
-  guideName: string,
+  landmarkId: MaybeRef<number>,
   initialPicture?: MaybeRef<string | undefined>,
 ) => {
   const messages = ref<ChatMessage[]>([])
   const isConnected = ref(false)
 
-  // Mock connection delay
+  const { mutateAsync: fetchHistory } = useMutation({
+    mutationFn: async () => {
+      const { data } = await httpService.GET('/chats/{landmark}/history', {
+        params: {
+          path: {
+            landmark: unref(landmarkId),
+          },
+        },
+      })
+      return data
+    },
+  })
+
   const connect = async () => {
-    sendInitialMessage()
+    try {
+      const history = await fetchHistory()
+      // @ts-expect-error -- TODO
+      const historyMessages: ChatMessage[] = history?.map((message) =>
+        createChatMessage(
+          message.message,
+          message.sender === 'agent' ? 'guide' : 'user',
+          new Date(message.timestamp),
+        ),
+      )
+      messages.value = [...historyMessages]
+    } catch {}
+
+    // Only send initial message if there are no previous messages
+    if (messages.value.length === 0) sendInitialMessage()
 
     isConnected.value = true
 
@@ -21,11 +58,9 @@ export const useChat = (
     const initialImageMessage: ChatMessage = {
       id: `initial-image-${Date.now()}`,
       author: 'guide',
-      authorName: guideName,
       message: '',
       image: unref(initialPicture),
       timestamp: new Date(),
-      isLoading: false,
       type: 'image',
     }
 
@@ -36,13 +71,7 @@ export const useChat = (
 
   const { mutate: sendMessage, isPending: isTyping } = useMutation({
     onMutate: (messageText: string) => {
-      const userMessage: ChatMessage = {
-        id: `user-${Date.now()}`,
-        author: 'user',
-        message: messageText,
-        timestamp: new Date(),
-        type: 'text',
-      }
+      const userMessage = createChatMessage(messageText, 'user')
       messages.value.push(userMessage)
     },
     mutationFn: async (messageText: string) => {
@@ -52,36 +81,22 @@ export const useChat = (
         },
         params: {
           path: {
-            landmark: landmarkId,
+            landmark: unref(landmarkId),
           },
         },
       })
       return data
-      // return Promise.resolve({
-      //   message: messageText,
-      // })
     },
 
     onSuccess: (responseText) => {
-      console.log('🚀 ~ useChat ~ responseText:', responseText)
-      const guideMessage: ChatMessage = {
-        id: `guide-${Date.now()}`,
-        author: 'guide',
-        authorName: guideName,
-        // @ts-expect-error TODO
-        message: responseText.message as string,
-        timestamp: new Date(),
-        isLoading: false,
-        type: 'text',
-      }
-
+      // @ts-expect-error -- TODO
+      const guideMessage = createChatMessage(responseText?.message as string, 'guide', new Date())
       messages.value.push(guideMessage)
     },
   })
 
   const sendInitialMessage = async () => {
-    const INITIAL_MESSAGE =
-      'Cześć! Chciałbym dowiedzieć się więcej o tym miejscu. Co możesz mi o nim opowiedzieć?'
+    const INITIAL_MESSAGE = '/initlandmark'
 
     sendMessage(INITIAL_MESSAGE)
   }

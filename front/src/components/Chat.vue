@@ -24,11 +24,10 @@
                 v-for="message in props.messages"
                 :key="message.id"
                 :author="message.author"
-                :author-name="message.authorName"
+                :author-name="guideName"
                 :message="message.message"
                 :image="message.image"
                 :timestamp="message.timestamp"
-                :is-loading="message.isLoading"
               />
             </TransitionGroup>
 
@@ -67,13 +66,12 @@ import ScrollPanel from 'primevue/scrollpanel'
 import GuideAvatar from './GuideAvatar.vue'
 import type { ChatMessage as ChatMessageType } from '@/types/chat'
 
-interface Props {
+const props = defineProps<{
   messages: ChatMessageType[]
   isTyping: boolean
   isConnected: boolean
-}
-
-const props = defineProps<Props>()
+  guideName?: string
+}>()
 </script>
 
 <style lang="scss" scoped>

@@ -20,22 +20,12 @@
         <div class="message-content">
           <!-- Author and timestamp -->
           <div class="message-header">
-            <span class="message-author">{{ authorName || (isUser ? 'Ty' : 'Przewodnik') }}</span>
+            <span class="message-author">{{ isUser ? 'Ty' : (authorName ?? 'Przewodnik') }}</span>
             <small class="message-time">{{ formattedTime }}</small>
           </div>
 
-          <!-- Loading state -->
-          <div v-if="isLoading" class="message-loading">
-            <div class="loading-dots">
-              <div class="dot"></div>
-              <div class="dot"></div>
-              <div class="dot"></div>
-            </div>
-            <span class="loading-text">Ładowanie...</span>
-          </div>
-
           <!-- Image message -->
-          <div v-else-if="image && !isLoading" class="message-image">
+          <div v-if="image && !isLoading" class="message-image">
             <Image
               :src="image"
               :alt="`Image from ${author}`"
