@@ -87,14 +87,11 @@ def create_app():
             
             # Retrieve relevant context from documents
             logger.info(f"Retrieving relevant context for query: {query}")
-            relevant_context = document_store.retrieve_relevant_context(query, top_k=3)
-            
-            if not relevant_context:
-                logger.info(f"No relevant context found for query: {query}")
-                # Fallback to landmark document if no relevant context found
-                landmark_doc = document_store.get_landmark_description(landmark)
-                relevant_context = [(landmark, landmark_doc, 1.0)] if landmark_doc else []
-            
+            relevant_context = []
+            relevant_context = document_store.retrieve_relevant_context(query, top_k=8)
+            landmark_doc = document_store.get_landmark_description(landmark)
+            relevant_context += [(f'Miejsce: {landmark} | Opis: {landmark_doc}', 1.0)] if landmark_doc else []
+
             # Get conversation history
             logger.info(f"Fetching conversation history for session ID: {session.session_id}")
             conversation_context = session.get_recent_context(5)

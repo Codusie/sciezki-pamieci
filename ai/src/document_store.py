@@ -39,16 +39,11 @@ class DocumentStore:
             logger.info(f'Added {len(self.landmarks)} landmark documents from CSV.')
 
         if historical_info_txt:
-            historical_info = []
             buff = ''
             with open(historical_info_txt, 'r', encoding='utf-8') as f:
                 for line in f.readlines():
-                    if len(line.strip()) == 0 and len(buff) > 0:
-                        historical_info += [buff.strip()]
-                        buff = ''
-                    else:
-                        buff += line.strip() + '\n'
-            self.historical_info = historical_info
+                    buff += line.strip() + '\n'
+            self.historical_info = buff.split('\n\n') if len(buff) > 0 else []
             logger.info(f'Added {len(self.historical_info)} historical documents from text file.')
         
         self.documents = [f'Obiekt: {name}\nOpis:{description}' \
@@ -62,7 +57,7 @@ class DocumentStore:
             return
             
         texts = self.documents
-        self.vectorizer = TfidfVectorizer(max_features=1000)
+        self.vectorizer = TfidfVectorizer(max_features=1000, lowercase=True)
         self.vectors = self.vectorizer.fit_transform(texts)
         logger.info('Rebuilt document vectors.')
         
