@@ -13,6 +13,21 @@ logger = logging.getLogger(__name__)
 
 FALLBACK = "Przykro mi, ale nie jestem w stanie odpowiedzieć na to pytanie w tej chwili."
 
+def retry(retries: int = 3):
+    """Decorator to retry a function on exception."""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            last_exception = None
+            for attempt in range(1, retries + 1):
+                try:
+                    return func(*args, **kwargs)  # pass all arguments to the function
+                except Exception as e:
+                    last_exception = e
+                    logger.warning(f"Attempt {attempt} failed: {str(e)}")
+            logger.warning(f'Failed to generate after 3 retries, returning fallback')
+            return FALLBACK
+        return wrapper
+    return decorator
 
 class PromptEngineering:
     """Builds context-aware prompts based on persona and landmark"""
@@ -419,6 +434,7 @@ class LLMClient:
             cls._provider = LLMClientFactory.create_from_config()
     
     @classmethod
+    @retry(retries=3)
     def generate_response(
         cls,
         system_prompt: str,
@@ -443,7 +459,7 @@ class LLMClient:
             cls.initialize()
         
         # Create temporary provider with overrides if specified
-        if model or temperature is not None or max_tokens:
+        if model is not None or temperature is not None or max_tokens:
             provider = cls._provider
             # Create a copy with overrides
             original_model = provider.model
@@ -463,12 +479,13 @@ class LLMClient:
                 provider.max_tokens = original_tokens
             
             return response
-        
+        print(1/0)
         return cls._provider.generate_response(system_prompt, user_message, conversation_history)
 
 
 
 # Convenience functions
+@retry(retries=3)
 def generate_landmark_response(
     session_data: Dict,
     user_query: str,
@@ -477,7 +494,6 @@ def generate_landmark_response(
     conversation_history: List[Dict[str, str]] = []
 ) -> str:
     """Generate a personalized response about a landmark"""
-    
     persona = session_data.get("persona", "general visitor")
     landmark = session_data.get("landmark", "Bydgoszcz landmark")
     
@@ -503,3 +519,4 @@ def generate_landmark_response(
     logger.info(f"Response generated.")
     
     return response
+
