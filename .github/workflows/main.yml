@@ -20,7 +20,7 @@ jobs:
         script: |
           cd domains/sciezki-pamieci
           git pull
-          cd admin
+          cd api
           php84 ~/composer/composer i --no-dev --no-interaction --prefer-dist --optimize-autoloader
           php84 artisan optimize
           php84 artisan migrate --force
