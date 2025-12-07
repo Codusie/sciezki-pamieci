@@ -23,6 +23,7 @@ declare module 'vue' {
     GuidesStats: typeof import('./src/components/GuidesStats.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     Icon: typeof import('./src/components/Icon.vue')['default']
+    IntroModal: typeof import('./src/components/IntroModal.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
     MapMarker: typeof import('./src/components/MapMarker.vue')['default']

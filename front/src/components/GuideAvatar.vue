@@ -51,6 +51,7 @@ const image = computed(() => {
     height: 100%;
     border-radius: 50%;
     object-fit: cover;
+    opacity: 0.9;
   }
 }
 </style>

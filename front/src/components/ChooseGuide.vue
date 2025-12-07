@@ -46,7 +46,7 @@ const emit = defineEmits<{
 const TEAMS = [
   {
     key: 'rejewski',
-    name: 'Rejewski',
+    name: 'Marian Rejewski',
     color: GUIDE_TO_COLOR_MAP['rejewski'],
     img: rejewski,
   },
@@ -70,7 +70,10 @@ $skewDegree: 5deg;
 
 .choose-guide {
   overflow: hidden;
-  background: linear-gradient(var(--p-blue-500) 49%, var(--p-red-600) 51%);
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(to left, var(--p-blue-500) 49%, var(--p-red-600) 51%);
 
   &__title {
     width: 100%;
@@ -80,7 +83,6 @@ $skewDegree: 5deg;
     padding: 2rem 0;
     color: var(--p-slate-50);
     position: absolute;
-    top: 30px;
     z-index: 100;
   }
 
@@ -88,8 +90,8 @@ $skewDegree: 5deg;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    transform: skew($skewDegree);
+    height: 100%;
+    transform: skew($skewDegree) translateX(-5vw);
   }
 }
 
@@ -113,33 +115,40 @@ $skewDegree: 5deg;
     align-items: center;
     height: 100%;
     width: 100%;
-    transform: skew(-$skewDegree);
     position: relative;
     padding-bottom: 40px;
+
+    > * {
+      transform: skew(-$skewDegree);
+    }
   }
 
   &--red {
     background-color: var(--p-red-600);
+    color: var(--p-red-100);
   }
 
   &--yellow {
     background-color: var(--p-yellow-500);
+    color: var(--p-yellow-100);
   }
 
   &--blue {
     background-color: var(--p-blue-500);
+    color: var(--p-blue-100);
   }
 
   &__name {
+    width: 100dvh;
     font-size: 40px;
     transition: 0.3s;
     font-weight: 600;
-    opacity: 0.5;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) rotate(#{90deg - $skewDegree});
+    transform: translate(-50%, -50%) rotate(#{90deg});
     position: absolute;
     font-family: 'Oswald', sans-serif;
+    z-index: 100;
   }
 
   &__button {
@@ -155,11 +164,11 @@ $skewDegree: 5deg;
   }
 
   &:focus-within {
-    width: 200%;
+    width: 160%;
   }
 
   &:focus-within &__name {
-    font-size: 60px;
+    font-size: 50px;
   }
 
   &:focus-within &__button {
@@ -170,8 +179,8 @@ $skewDegree: 5deg;
   &__image {
     position: absolute;
     bottom: 0;
-    left: -20%;
-    width: 110%;
+    left: -40%;
+    width: 140%;
     pointer-events: none;
     opacity: 0.5;
   }

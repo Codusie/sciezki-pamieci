@@ -11,7 +11,7 @@
       :max-zoom="18"
       :min-zoom="10"
       :max-bounds="[
-        [52.94, 17.70],
+        [52.94, 17.7],
         [53.31, 18.31],
       ]"
       v-model:zoom="zoom"
@@ -85,7 +85,7 @@ const centerUpdated = (event: { lat: number; lng: number }) => {
   emit('update:center', event)
 }
 
-const colorMain = useGuideColor(600)
+const colorMain = useGuideColor(500)
 const colorLight = useGuideColor(200)
 </script>
 

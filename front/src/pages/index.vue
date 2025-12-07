@@ -1,7 +1,11 @@
 <template>
   <Layout>
     <div class="map-view">
-      <GuideAvatar class="map-view__avatar" style="z-index: 9900;" />
+      <GuideAvatar
+        class="map-view__avatar"
+        style="z-index: 9900"
+        @click="isIntroModalVisible = true"
+      />
 
       <Map class="map-view__map">
         <LCircleMarker v-if="coords" :lat-lng="[coords.latitude, coords.longitude]" :radius="10" />
@@ -16,6 +20,11 @@
       </Map>
     </div>
   </Layout>
+  <IntroModal
+    v-model:visible="isIntroModalVisible"
+    :guide="store.guide"
+    @confirm="isIntroModalVisible = false"
+  />
 </template>
 
 <script setup lang="ts">
@@ -26,14 +35,19 @@ import GuideAvatar from '@/components/GuideAvatar.vue'
 import { useGeolocation } from '@vueuse/core'
 import { LCircleMarker } from '@vue-leaflet/vue-leaflet'
 import { useLandmarks } from '@/composables/useLandmarks'
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useMutation } from '@tanstack/vue-query'
 import { httpService } from '@/api'
 import { getDistanceFromLatLonInMeters } from '@/utils/getDistanceFromLatLonInMeters'
 
-const { data } = useLandmarks()
+import IntroModal from '@/components/IntroModal.vue'
+import { useAuthStore } from '@/stores/auth'
 
-const { coords, locatedAt } = useGeolocation({
+const { data } = useLandmarks()
+const store = useAuthStore()
+const isIntroModalVisible = ref(false)
+
+const { coords } = useGeolocation({
   enableHighAccuracy: true,
   immediate: true,
 })
