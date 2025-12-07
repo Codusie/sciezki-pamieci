@@ -1,5 +1,11 @@
 <template>
-  <Header :title="landmark?.name || 'Wczytywanie'" :subtitle="landmark?.localization_name" back />
+  <Header :title="landmark?.name || 'Wczytywanie'" :subtitle="landmark?.localization_name" back>
+    <GuidesStats
+      :kazimierz_wielki_visits_count="landmark?.kazimierz_wielki_visits_count ?? 0"
+      :twardowski_visits_count="landmark?.twardowski_visits_count ?? 0"
+      :rejewski_visits_count="landmark?.rejewski_visits_count ?? 0"
+    />
+  </Header>
   <Layout>
     <BaseLoading :loading="isLoading">
       <div class="landmark-view">
@@ -48,6 +54,7 @@ import { useAuthStore } from '@/stores/auth'
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Team } from '@/schema'
+import GuidesStats from '@/components/GuidesStats.vue'
 import { httpService } from '@/api'
 
 const route = useRoute()
@@ -84,7 +91,7 @@ onMounted(() => {
     httpService.POST('/visits', {
       body: {
         landmark_id: landmarkId.value,
-      }
+      },
     })
   }
 })

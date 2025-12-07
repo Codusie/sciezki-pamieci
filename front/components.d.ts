@@ -12,7 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
-    Button: typeof import('./src/components/Button.vue')['default']
+    Button: typeof import('primevue/button')['default']
     Chat: typeof import('./src/components/Chat.vue')['default']
     ChatInput: typeof import('./src/components/ChatInput.vue')['default']
     ChatMessage: typeof import('./src/components/ChatMessage.vue')['default']
@@ -20,6 +20,7 @@ declare module 'vue' {
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
     copy: typeof import('./src/components/Button copy.vue')['default']
     GuideAvatar: typeof import('./src/components/GuideAvatar.vue')['default']
+    GuidesStats: typeof import('./src/components/GuidesStats.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     Icon: typeof import('./src/components/Icon.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
@@ -32,5 +33,6 @@ declare module 'vue' {
   export interface GlobalDirectives {
     AnimateOnScroll: typeof import('primevue/animateonscroll')['default']
     Ripple: typeof import('primevue/ripple')['default']
+    Tooltip: typeof import('primevue/tooltip')['default']
   }
 }

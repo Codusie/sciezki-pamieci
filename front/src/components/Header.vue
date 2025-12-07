@@ -10,6 +10,8 @@
         {{ subtitle }}
       </div>
     </div>
+
+    <slot></slot>
   </header>
 </template>
 
