@@ -3,7 +3,7 @@ export interface ChatMessage {
   author: 'user' | 'guide'
   message: string
   image?: string
-  timestamp: Date
+  timestamp?: Date
   type: 'text' | 'image'
 }
 

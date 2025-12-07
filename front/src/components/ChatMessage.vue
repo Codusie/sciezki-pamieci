@@ -21,7 +21,7 @@
           <!-- Author and timestamp -->
           <div class="message-header">
             <span class="message-author">{{ isUser ? 'Ty' : (authorName ?? 'Przewodnik') }}</span>
-            <small class="message-time">{{ formattedTime }}</small>
+            <small class="message-time" v-if="timestamp">{{ formattedTime }}</small>
           </div>
 
           <!-- Image message -->
@@ -72,7 +72,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  timestamp: () => new Date(),
   isLoading: false,
 })
 
@@ -112,7 +111,7 @@ const messageCardClass = computed(() => ({
 }))
 
 const formattedTime = computed(() => {
-  return props.timestamp.toLocaleTimeString([], {
+  return props.timestamp?.toLocaleTimeString([], {
     hour: '2-digit',
     minute: '2-digit',
   })

@@ -1,9 +1,5 @@
 <template>
-  <Header 
-    :title="data?.name || 'Wczytywanie'"
-    :subtitle="data?.localization_name"
-    back
-  />
+  <Header :title="landmark?.name || 'Wczytywanie'" :subtitle="landmark?.localization_name" back />
   <Layout>
     <BaseLoading :loading="isLoading">
       <div class="landmark-view">
@@ -70,8 +66,8 @@ const guideName = computed(() => {
 
 // Chat functionality
 const chat = useChat(
-  landmarkId,
-  computed(() => landmark.value?.thumbnail_url),
+  // @ts-expect-error TODO
+  landmark,
 )
 
 const handleSendMessage = () => {

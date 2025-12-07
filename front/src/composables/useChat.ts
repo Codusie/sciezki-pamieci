@@ -2,6 +2,9 @@ import { ref, computed, nextTick, type MaybeRef, unref } from 'vue'
 import type { ChatMessage } from '@/types/chat'
 import { useMutation } from '@tanstack/vue-query'
 import { httpService } from '@/api'
+import type { components } from '@/schema'
+
+type Landmark = components['schemas']['Landmark']
 
 const createChatMessage = (
   message: string,
@@ -15,10 +18,7 @@ const createChatMessage = (
   type: 'text',
 })
 
-export const useChat = (
-  landmarkId: MaybeRef<number>,
-  initialPicture?: MaybeRef<string | undefined>,
-) => {
+export const useChat = (landmark: MaybeRef<Landmark>) => {
   const messages = ref<ChatMessage[]>([])
   const isConnected = ref(false)
 
@@ -27,7 +27,7 @@ export const useChat = (
       const { data } = await httpService.GET('/chats/{landmark}/history', {
         params: {
           path: {
-            landmark: unref(landmarkId),
+            landmark: unref(landmark).id,
           },
         },
       })
@@ -36,6 +36,24 @@ export const useChat = (
   })
 
   const connect = async () => {
+    const { thumbnail_url, description } = unref(landmark)
+    if (thumbnail_url)
+      messages.value.push({
+        id: `initial-image-${Date.now()}`,
+        author: 'guide',
+        message: '',
+        image: thumbnail_url,
+        type: 'image',
+      })
+
+    const defaultDescription = 'Cześć! Jestem Twoim przewodnikiem! Jak mogę Ci pomóc?'
+    messages.value.push({
+      id: `initial-text-${Date.now()}`,
+      author: 'guide',
+      message: defaultDescription ?? description,
+      type: 'text',
+    })
+
     try {
       const history = await fetchHistory()
       // @ts-expect-error -- TODO
@@ -46,27 +64,12 @@ export const useChat = (
           new Date(message.timestamp),
         ),
       )
-      messages.value = [...historyMessages]
-    } catch {}
-
-    // Only send initial message if there are no previous messages
-    if (messages.value.length === 0) sendInitialMessage()
-
-    isConnected.value = true
-
-    // Add initial picture message without loading
-    const initialImageMessage: ChatMessage = {
-      id: `initial-image-${Date.now()}`,
-      author: 'guide',
-      message: '',
-      image: unref(initialPicture),
-      timestamp: new Date(),
-      type: 'image',
+      messages.value.push(...historyMessages)
+    } catch (e) {
+      console.error('History failed to load:', e)
     }
 
-    setTimeout(() => {
-      if (unref(initialPicture)) messages.value.push(initialImageMessage)
-    }, 300)
+    isConnected.value = true
   }
 
   const { mutate: sendMessage, isPending: isTyping } = useMutation({
@@ -81,7 +84,7 @@ export const useChat = (
         },
         params: {
           path: {
-            landmark: unref(landmarkId),
+            landmark: unref(landmark).id,
           },
         },
       })
@@ -94,12 +97,6 @@ export const useChat = (
       messages.value.push(guideMessage)
     },
   })
-
-  const sendInitialMessage = async () => {
-    const INITIAL_MESSAGE = '/initlandmark'
-
-    sendMessage(INITIAL_MESSAGE)
-  }
 
   const scrollToBottom = () => {
     nextTick(() => {
