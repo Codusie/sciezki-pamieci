@@ -29,6 +29,10 @@ import GuideAvatar from '@/components/GuideAvatar.vue'
 import { useGeolocation } from '@vueuse/core'
 import { LCircleMarker } from '@vue-leaflet/vue-leaflet'
 import { useLandmarks } from '@/composables/useLandmarks'
+import { watch } from 'vue'
+import { useMutation } from '@tanstack/vue-query'
+import { httpService } from '@/api'
+import { getDistanceFromLatLonInMeters } from '@/utils/getDistanceFromLatLonInMeters'
 
 const { data } = useLandmarks()
 
@@ -36,6 +40,34 @@ const { coords, locatedAt } = useGeolocation({
   enableHighAccuracy: true,
   immediate: true,
 })
+
+const { mutate: markAsVisited } = useMutation({
+  mutationFn: async (landmarkId: number) => {
+    await httpService.POST('/visits', {
+      body: {
+        landmark_id: landmarkId,
+      },
+    })
+  },
+})
+
+watch(
+  coords,
+  (newCoords) => {
+    if (!newCoords) return
+    const nearbyLandmark = data.value?.find((landmark) => {
+      const distance = getDistanceFromLatLonInMeters(
+        newCoords.latitude,
+        newCoords.longitude,
+        Number(landmark.latitude),
+        Number(landmark.longitude),
+      )
+      return distance <= 50 // 50 meters radius
+    })
+    if (nearbyLandmark) markAsVisited(nearbyLandmark.id)
+  },
+  { immediate: true },
+)
 </script>
 
 <style lang="scss" scoped>
