@@ -41,6 +41,7 @@ final class ChatController
             },
             'message' => $item['content'],
             'landmark' => $item['landmark'],
+            'timestamp' => $item['timestamp'],
         ], $history);
 
         $responses = array_filter($responses, fn($item) => $item['landmark'] === $landmark->name);
@@ -66,6 +67,8 @@ final class ChatController
         $json = $response->json();
 
         $reply = $json['response'] ?? null;
+        $timestamp = $json['timestamp'] ?? null;
+        $landmark_name = $json['landmark'] ?? null;
 
         if ($reply === null) {
             throw new Exception('No response from AI');
@@ -74,7 +77,8 @@ final class ChatController
         return Response::json([
             'sender' => CharMessageSender::Agent,
             'message' => $reply,
-            'landmark' => $landmark->name,
+            'landmark' => $landmark_name,
+            'timestamp'=> $timestamp,
         ]);
     }
 }
