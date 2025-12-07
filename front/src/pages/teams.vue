@@ -13,9 +13,9 @@
               <div class="avatar-wrapper">
                 <div class="avatar" :style="{ borderColor: getTeamColor(sortedTeams[1].key) }">
                   <img
-                    v-if="sortedTeams[1].key === 'rejewski'"
-                    src="@/assets/images/rejewski.png"
-                    alt="Rejewski"
+                    v-if="getTeamAvatar(sortedTeams[1].key)"
+                    :src="getTeamAvatar(sortedTeams[1].key)"
+                    :alt="getTeamName(sortedTeams[1].key)"
                   />
                   <div v-else class="placeholder" :style="{ backgroundColor: getTeamColor(sortedTeams[1].key) }">
                     {{ getInitials(sortedTeams[1].key) }}
@@ -36,9 +36,9 @@
               <div class="avatar-wrapper">
                 <div class="avatar" :style="{ borderColor: getTeamColor(sortedTeams[0].key) }">
                   <img
-                    v-if="sortedTeams[0].key === 'rejewski'"
-                    src="@/assets/images/rejewski.png"
-                    alt="Rejewski"
+                    v-if="getTeamAvatar(sortedTeams[0].key)"
+                    :src="getTeamAvatar(sortedTeams[0].key)"
+                    :alt="getTeamName(sortedTeams[0].key)"
                   />
                   <div v-else class="placeholder" :style="{ backgroundColor: getTeamColor(sortedTeams[0].key) }">
                     {{ getInitials(sortedTeams[0].key) }}
@@ -58,9 +58,9 @@
               <div class="avatar-wrapper">
                 <div class="avatar" :style="{ borderColor: getTeamColor(sortedTeams[2].key) }">
                   <img
-                    v-if="sortedTeams[2].key === 'rejewski'"
-                    src="@/assets/images/rejewski.png"
-                    alt="Rejewski"
+                    v-if="getTeamAvatar(sortedTeams[2].key)"
+                    :src="getTeamAvatar(sortedTeams[2].key)"
+                    :alt="getTeamName(sortedTeams[2].key)"
                   />
                   <div v-else class="placeholder" :style="{ backgroundColor: getTeamColor(sortedTeams[2].key) }">
                     {{ getInitials(sortedTeams[2].key) }}
@@ -88,6 +88,9 @@ import { computed } from 'vue'
 import { GUIDE_TO_COLOR_MAP } from '@/composables/useGuideColor'
 import type { Team } from '@/schema'
 import Header from '@/components/Header.vue'
+import rejewski from '@/assets/images/rejewski.png'
+import kazimierzWielki from '@/assets/images/kazimierz_wielki.png'
+import twardowski from '@/assets/images/twardowski.png'
 
 const TEAMS_DISPLAY = {
   rejewski: 'Rejewski',
@@ -132,6 +135,14 @@ const getInitials = (key: string) => {
     .toUpperCase()
     .slice(0, 2)
 }
+
+const TEAM_AVATAR: Record<Team, string> = {
+  rejewski,
+  kazimierz_wielki: kazimierzWielki,
+  twardowski,
+}
+
+const getTeamAvatar = (key: string) => TEAM_AVATAR[key as Team] || ''
 </script>
 
 <style lang="scss" scoped>
