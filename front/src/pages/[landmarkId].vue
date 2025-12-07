@@ -45,9 +45,10 @@ import Card from 'primevue/card'
 import { useLandmark } from '@/composables/useLandmark'
 import { useChat } from '@/composables/useChat'
 import { useAuthStore } from '@/stores/auth'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Team } from '@/schema'
+import { httpService } from '@/api'
 
 const route = useRoute()
 const authStore = useAuthStore()
@@ -77,6 +78,16 @@ const handleSendMessage = () => {
     chat.scrollToBottom()
   }
 }
+
+onMounted(() => {
+  if (route.query.visited) {
+    httpService.POST('/visits', {
+      body: {
+        landmark_id: landmarkId.value,
+      }
+    })
+  }
+})
 
 watch(chat.lastMessageId, () => {
   chat.scrollToBottom()

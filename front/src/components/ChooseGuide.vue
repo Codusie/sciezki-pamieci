@@ -21,8 +21,8 @@
           >
 
           <img
-            src="@/assets/images/rejewski.png"
-            alt="Rejewski"
+            :src="team.img"
+            :alt="team.name"
             class="single-guide-button__image"
           />
         </div>
@@ -34,6 +34,9 @@
 <script setup lang="ts">
 import { GUIDE_TO_COLOR_MAP } from '@/composables/useGuideColor'
 import type { Team } from '@/schema'
+import rejewski from '@/assets/images/rejewski.png'
+import kazimierzWielki from '@/assets/images/kazimierz_wielki.png'
+import twardowski from '@/assets/images/twardowski.png'
 
 defineProps<{
   loading: boolean
@@ -48,16 +51,19 @@ const TEAMS = [
     key: 'rejewski',
     name: 'Rejewski',
     color: GUIDE_TO_COLOR_MAP['rejewski'],
+    img: rejewski,
   },
   {
     key: 'kazimierz_wielki',
     name: 'Kazimierz Wielki',
     color: GUIDE_TO_COLOR_MAP['kazimierz_wielki'],
+    img: kazimierzWielki,
   },
   {
     key: 'twardowski',
     name: 'Pan Twardowski',
     color: GUIDE_TO_COLOR_MAP['twardowski'],
+    img: twardowski,
   },
 ] as const
 </script>
