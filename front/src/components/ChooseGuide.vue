@@ -1,6 +1,6 @@
 <template>
   <div class="choose-guide">
-    <div class="choose-guide__title">Wybierz swojego przewodnika:</div>
+    <div class="choose-guide__title">Z kim chcesz poznać Bydgoszcz?</div>
 
     <div class="choose-guide__select">
       <div
@@ -17,14 +17,11 @@
             class="single-guide-button__button"
             size="large"
             @click="emit('select', team.key as Team)"
-            >Dołącz!</Button
           >
+            Wybieram!
+          </Button>
 
-          <img
-            :src="team.img"
-            :alt="team.name"
-            class="single-guide-button__image"
-          />
+          <img :src="team.img" :alt="team.name" class="single-guide-button__image" />
         </div>
       </div>
     </div>
@@ -78,7 +75,7 @@ $skewDegree: 5deg;
   &__title {
     width: 100%;
     text-align: center;
-    font-size: 2rem;
+    font-size: 2.4rem;
     font-weight: 700;
     padding: 2rem 0;
     color: var(--p-slate-50);
@@ -104,7 +101,6 @@ $skewDegree: 5deg;
   cursor: pointer;
   color: var(--p-slate-50);
   overflow: hidden;
-  font-size: 40px;
 
   &:first-child {
     overflow: initial;
@@ -135,7 +131,8 @@ $skewDegree: 5deg;
   }
 
   &__name {
-    font-size: 2em;
+    font-size: 40px;
+    transition: 0.3s;
     font-weight: 600;
     opacity: 0.5;
     top: 50%;
@@ -150,12 +147,19 @@ $skewDegree: 5deg;
     opacity: 0;
     transition: 0.3s;
     z-index: 100;
+    width: auto;
+    padding: 0 2rem;
+    margin-bottom: 40px;
+    font-weight: 600;
     background-color: #fff;
   }
 
   &:focus-within {
     width: 200%;
-    font-size: 50px;
+  }
+
+  &:focus-within &__name {
+    font-size: 60px;
   }
 
   &:focus-within &__button {
