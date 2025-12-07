@@ -1,5 +1,5 @@
 <template>
-  <div v-tooltip.bottom="tooltipText" class="guides-stats">
+  <div v-tooltip.focus.bottom="tooltipText" class="guides-stats">
     <div
       class="guides-stats__item"
       :class="`guides-stats__item--${item.color}`"
