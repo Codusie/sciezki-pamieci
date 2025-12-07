@@ -1,0 +1,1 @@
+import{v as n,c as o,r as s,o as t}from"./index-4E9G_ebQ.js";const c={},r={class:"button"};function _(e,a){return t(),o("div",r,[s(e.$slots,"default",{},void 0,!0)])}const u=n(c,[["render",_],["__scopeId","data-v-3c9d0845"],["__file","/usr/src/app/src/components/Button.vue"]]);export{u as _};

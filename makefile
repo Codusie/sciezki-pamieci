@@ -37,10 +37,13 @@ format:
 	docker compose exec api vendor/bin/pint
 
 build:
+	mv ./front/.env ./front/.env.temp
+	mv ./front/.env.build ./front/.env
 	docker compose exec front bun run build-only
+	mv ./front/.env ./front/.env.build
+	mv ./front/.env.temp ./front/.env
 
 pre-commit:
 	make types
 	make format
 	make test
-	make build
