@@ -44,14 +44,16 @@ export const useChat = (landmark: MaybeRef<Landmark>) => {
         message: '',
         image: thumbnail_url,
         type: 'image',
+        timestamp: new Date(),
       })
 
     const defaultDescription = 'Cześć! Jestem Twoim przewodnikiem! Jak mogę Ci pomóc?'
     messages.value.push({
       id: `initial-text-${Date.now()}`,
       author: 'guide',
-      message: defaultDescription ?? description,
+      message: description ?? defaultDescription,
       type: 'text',
+      timestamp: new Date(),
     })
 
     try {
@@ -92,8 +94,11 @@ export const useChat = (landmark: MaybeRef<Landmark>) => {
     },
 
     onSuccess: (responseText) => {
-      // @ts-expect-error -- TODO
-      const guideMessage = createChatMessage(responseText?.message as string, 'guide', new Date())
+      const guideMessage = createChatMessage(
+        responseText?.message ?? 'Coś poszło nie tak. Spróbuj ponownie później.',
+        'guide',
+        new Date(),
+      )
       messages.value.push(guideMessage)
     },
   })
