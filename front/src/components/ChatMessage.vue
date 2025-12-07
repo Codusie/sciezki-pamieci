@@ -10,7 +10,7 @@
             :label="avatarLabel"
             :icon="avatarIcon"
             :image="avatarImage"
-            shape="circle"
+            shape="square"
             size="normal"
             :class="avatarClass"
           />
