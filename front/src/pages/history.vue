@@ -7,11 +7,9 @@
     <BaseLoading :is-loading="isLoading">
       <div class="history-container">
 
-        <Timeline :value="data?.data" align="right" class="custom-timeline">
+        <Timeline :value="data?.data" class="custom-timeline">
           <template #marker>
-            <div class="custom-marker">
-              <i class="pi pi-map-marker" style="font-size: 1rem"></i>
-            </div>
+            <Icon icon="pi pi-map-marker" soft />
           </template>
           
           <template #content="slotProps">
@@ -48,6 +46,7 @@
 </template>
 
 <script setup lang="ts">
+import Icon from '@/components/Icon.vue'
 import { httpService } from '@/api'
 import Layout from '@/components/Layout.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
@@ -78,27 +77,6 @@ const formatFullDate = (dateString: string) => {
   margin: 0 auto;
   padding: 4rem 2rem;
   min-height: 100vh;
-  color: var(--p-text-color);
-}
-
-.header {
-  text-align: center;
-  margin-bottom: 5rem;
-
-  .title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin: 0;
-    color: #1a1a1a; /* Forced dark color for contrast */
-  }
-
-  .subtitle {
-    font-size: 1.2rem;
-    color: var(--p-text-muted-color);
-    margin-top: 1rem;
-    font-weight: 300;
-  }
 }
 
 .custom-timeline {
@@ -181,9 +159,7 @@ const formatFullDate = (dateString: string) => {
   h2 {
     margin: 0;
     font-size: 1.5rem;
-    font-weight: 600;
-    color: var(--p-text-color);
-    line-height: 1.3;
+    font-weight: 500;
   }
 
   .visit-time {

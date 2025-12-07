@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 .button {
   width: 3rem;
   height: 3rem;

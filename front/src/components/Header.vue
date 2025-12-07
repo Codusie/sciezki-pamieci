@@ -3,9 +3,7 @@
     <Button v-if="back" @click="$router.go(-1)">
       <i class="pi pi-arrow-left"></i>
     </Button>
-    <div v-if="icon" class="header__icon">
-      <i :class="icon"></i>
-    </div>
+    <Icon v-if="icon" :icon="icon" />
     <div>
       <div class="header__title">{{ title }}</div>
       <div v-if="subtitle" class="header__subtitle">
@@ -17,6 +15,7 @@
 
 <script setup lang="ts">
 import Button from './Button.vue'
+import Icon from './Icon.vue'
 
 interface Props {
   title: string
@@ -44,6 +43,7 @@ const emit = defineEmits<{ back: [] }>()
   gap: 1rem;
   height: 5rem;
   padding: calc(env(safe-area-inset-top)) 0.75rem 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
 
   &__title {
@@ -61,17 +61,6 @@ const emit = defineEmits<{ back: [] }>()
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  &__icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--p-stone-800);
-    color: var(--p-stone-100);
   }
 }
 </style>

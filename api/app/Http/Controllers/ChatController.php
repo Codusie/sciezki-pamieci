@@ -34,7 +34,7 @@ final class ChatController
             throw new Exception('No response from AI');
         }
 
-        $responses = array_map(fn($item) => [
+        $responses = array_map(fn ($item) => [
             'sender' => match ($item['role']) {
                 'user' => CharMessageSender::User,
                 'assistant' => CharMessageSender::Agent,
@@ -55,7 +55,6 @@ final class ChatController
         $user = Auth::user();
         $team = $user->team;
         $url = Config::get('app.chat_ai_url') . '/chat';
-
 
         $response = Http::post($url, [
             'session_id' => 'session_' . $user->id,
@@ -78,7 +77,7 @@ final class ChatController
             'sender' => CharMessageSender::Agent,
             'message' => $reply,
             'landmark' => $landmark_name,
-            'timestamp'=> $timestamp,
+            'timestamp' => $timestamp,
         ]);
     }
 }

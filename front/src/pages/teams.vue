@@ -143,15 +143,6 @@ const getInitials = (key: string) => {
   background: var(--p-surface-ground);
 }
 
-.title {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 3rem;
-  color: #1a1a1a; /* Forced dark color for contrast */
-  letter-spacing: -1px;
-}
-
 .podium {
   display: flex;
   justify-content: center;
@@ -243,13 +234,10 @@ const getInitials = (key: string) => {
   font-size: 0.85rem;
   font-weight: 600;
   margin-bottom: 0.25rem;
-  color: var(--p-text-color);
   line-height: 1.2;
 }
 
 .score {
-  font-weight: 800;
-  color: var(--p-primary-600);
   font-size: 1rem;
 }
 
