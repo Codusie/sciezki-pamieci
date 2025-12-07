@@ -3,10 +3,7 @@
     <div class="map-view">
       <GuideAvatar class="map-view__avatar" style="z-index: 9900;" />
 
-      <Map
-        class="map-view__map"
-        v-bind="locatedAt ? { center: [coords.latitude, coords.longitude] } : undefined"
-      >
+      <Map class="map-view__map">
         <LCircleMarker v-if="coords" :lat-lng="[coords.latitude, coords.longitude]" :radius="10" />
 
         <MapMarker

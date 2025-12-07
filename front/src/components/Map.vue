@@ -9,7 +9,11 @@
     <LMap
       ref="mapRef"
       :max-zoom="18"
-      :min-zoom="2"
+      :min-zoom="10"
+      :max-bounds="[
+        [52.94, 17.70],
+        [53.31, 18.31],
+      ]"
       v-model:zoom="zoom"
       :center="center"
       :options="{ zoomControl: false }"
