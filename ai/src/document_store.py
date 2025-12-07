@@ -40,11 +40,14 @@ class DocumentStore:
 
         if historical_info_txt:
             historical_info = []
+            buff = ''
             with open(historical_info_txt, 'r', encoding='utf-8') as f:
                 for line in f.readlines():
-                    if len(line.strip()) == 0:
-                        continue
-                    historical_info += [line.strip()]
+                    if len(line.strip()) == 0 and len(buff) > 0:
+                        historical_info += [buff.strip()]
+                        buff = ''
+                    else:
+                        buff += line.strip() + '\n'
             self.historical_info = historical_info
             logger.info(f'Added {len(self.historical_info)} historical documents from text file.')
         
@@ -67,7 +70,7 @@ class DocumentStore:
         """Get the full description for a landmark"""
         return self.landmarks.get(landmark_name, "")
     
-    def retrieve_relevant_context(self, query: str, top_k: int = 3) -> List[Tuple[str, str, float]]:
+    def retrieve_relevant_context(self, query: str, top_k: int = 6) -> List[Tuple[str, str, float]]:
         """
         Retrieve the most relevant documents based on query
         Returns: List of (landmark_name, content, similarity_score)
