@@ -194,6 +194,10 @@ class OpenAIProvider(BaseLLMProvider):
     
     def __init__(self, model: str, temperature: float, max_tokens: int, api_key: str):
         super().__init__(model, temperature, max_tokens)
+        if model in ['gpt-5-mini', 'gpt-5-nano']:
+            self.max_tokens = None
+            self.temperature = None
+            logging.info('Disabling max_tokens and temperature for gpt-5-mini/nano models')
         try:
             from openai import OpenAI
             self.client = OpenAI(api_key=config.OPENAI_API_KEY)
@@ -210,12 +214,18 @@ class OpenAIProvider(BaseLLMProvider):
         messages = self._prepare_messages(system_prompt, user_message, conversation_history)
         
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
+            if self.max_tokens and self.temperature:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages,
+                    temperature=self.temperature,
+                    max_tokens=self.max_tokens
+                )
+            else:
+                response = self.client.chat.completions.create(
+                    model=self.model,
+                    messages=messages
+                )
             return response.choices[0].message.content
         except Exception as e:
             raise Exception(f"OpenAI API error: {str(e)}")
