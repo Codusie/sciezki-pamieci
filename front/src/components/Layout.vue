@@ -59,14 +59,13 @@ const items: NavItem[] = [
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-color: var(--p-surface-ground);
+  background-color: var(--p-surface-100);
 }
 
 .content {
   flex: 1;
   overflow-y: auto;
   padding-bottom: 100px; // Space for the floating nav
-  padding-top: 2rem; // Space from top for non-map pages
 
   &--no-padding {
     padding-bottom: 0;
@@ -87,7 +86,7 @@ const items: NavItem[] = [
   left: 0.5rem;
   right: 0.5rem;
   height: 4.5rem;
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
   border-radius: 1rem;
   display: flex;
@@ -97,7 +96,6 @@ const items: NavItem[] = [
   z-index: 2000;
   max-width: 500px;
   margin: 0 auto;
-  border: 1px solid var(--p-surface-200);
 }
 
 .nav-item {

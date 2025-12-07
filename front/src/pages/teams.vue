@@ -1,9 +1,11 @@
 <template>
   <Layout>
+    <Header
+      title="Ranking Drużyn"
+      icon="pi pi-users"
+    />
     <BaseLoading :is-loading="isLoading">
       <div v-if="sortedTeams" class="ranking-page">
-        <h1 class="title">Ranking Drużyn</h1>
-
         <div class="podium">
           <!-- 2nd Place -->
           <div v-if="sortedTeams[1]" class="podium-item place-2">
@@ -85,6 +87,7 @@ import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'
 import { GUIDE_TO_COLOR_MAP } from '@/composables/useGuideColor'
 import type { Team } from '@/schema'
+import Header from '@/components/Header.vue'
 
 const TEAMS_DISPLAY = {
   rejewski: 'Rejewski',

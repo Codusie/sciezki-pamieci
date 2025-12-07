@@ -1,11 +1,11 @@
 <template>
   <Layout>
+    <Header 
+      title="Twoja historia"
+      icon="pi pi-compass"
+    />
     <BaseLoading :is-loading="isLoading">
       <div class="history-container">
-        <div class="header">
-          <h1 class="title">Twoja historia</h1>
-          <p class="subtitle">Kolekcja miejsc i momentów</p>
-        </div>
 
         <Timeline :value="data?.data" align="right" class="custom-timeline">
           <template #marker>
@@ -33,7 +33,14 @@
         
         <div v-if="!data?.data?.length" class="empty-state">
           <i class="pi pi-compass" style="font-size: 3rem"></i>
-          <p>Nie odwiedziłeś jeszcze żadnych miejsc. Zacznij swoją podróż!</p>
+          <p>
+            Nie odwiedziłeś jeszcze żadnych miejsc.
+          </p>
+          <p>
+            <small>
+              Odwieź miejsce z mapy z włączoną lokalizacją lub zeskanuj kod QR przy atrakcji.
+            </small>
+          </p>
         </div>
       </div>
     </BaseLoading>
@@ -45,6 +52,7 @@ import { httpService } from '@/api'
 import Layout from '@/components/Layout.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
 import { useQuery } from '@tanstack/vue-query'
+import Header from '@/components/Header.vue'
 import Timeline from 'primevue/timeline'
 import { useDateFormat } from '@vueuse/core'
 import AnimateOnScroll from 'primevue/animateonscroll';
@@ -76,7 +84,6 @@ const formatFullDate = (dateString: string) => {
 .header {
   text-align: center;
   margin-bottom: 5rem;
-  animation: fadeDown 1s ease-out;
 
   .title {
     font-size: 3.5rem;
@@ -194,17 +201,6 @@ const formatFullDate = (dateString: string) => {
   p {
     margin-top: 1rem;
     font-size: 1.2rem;
-  }
-}
-
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }
 

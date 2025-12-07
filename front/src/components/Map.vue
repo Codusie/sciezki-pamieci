@@ -91,7 +91,7 @@ $border-radius: 8px;
 $break-point-mobile: 600px;
 $color-dark-bg: #121212;
 $color-dark: #1e1e1e;
-$font-main: 'Inter', sans-serif;
+$font-main: 'Urbanist', sans-serif;
 
 .map {
   &__line {

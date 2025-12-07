@@ -12,13 +12,14 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
-    Button: typeof import('primevue/button')['default']
+    Button: typeof import('./src/components/Button.vue')['default']
     Chat: typeof import('./src/components/Chat.vue')['default']
     ChatInput: typeof import('./src/components/ChatInput.vue')['default']
     ChatMessage: typeof import('./src/components/ChatMessage.vue')['default']
     ChooseGuide: typeof import('./src/components/ChooseGuide.vue')['default']
     ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
     GuideAvatar: typeof import('./src/components/GuideAvatar.vue')['default']
+    Header: typeof import('./src/components/Header.vue')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
     MapMarker: typeof import('./src/components/MapMarker.vue')['default']

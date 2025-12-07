@@ -1,18 +1,12 @@
 <template>
+  <Header 
+    :title="data?.name || 'Wczytywanie'"
+    :subtitle="data?.localization_name"
+    back
+  />
   <Layout>
     <BaseLoading :loading="isLoading">
       <div class="landmark-view">
-        <div class="landmark-header">
-          <div class="landmark-title">
-            <h1>{{ landmark?.name || 'Wczytywanie...' }}</h1>
-          </div>
-
-          <div v-if="landmark?.localization_name" class="landmark-location">
-            <i class="pi pi-map-marker"></i>
-            <span>{{ landmark.localization_name }}</span>
-          </div>
-        </div>
-
         <div class="landmark-content">
           <Chat
             v-if="landmark && chat"
@@ -46,6 +40,7 @@
 </template>
 
 <script setup lang="ts">
+import Header from '@/components/Header.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
 import Layout from '@/components/Layout.vue'
 import Chat from '@/components/Chat.vue'
