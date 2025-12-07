@@ -8,17 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue'
 import { useAuthStore } from './stores/auth'
 import BaseLoading from './components/BaseLoading.vue'
-import { useRouter } from 'vue-router'
 
 const store = useAuthStore()
-const router = useRouter()
-
-onBeforeMount(() => {
-  if (!store.accessToken) router.push({ name: 'choose-your-guide' })
-})
 </script>
 
 <style lang="scss">

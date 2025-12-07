@@ -11,12 +11,13 @@ export const useAuthStore = defineStore(
     const accessToken = ref<string | null>(null)
     const isSessionError = ref(false)
 
-    const { mutate: createNewSession, isPending: isInitializingSession } = useMutation({
+    const { mutateAsync: createNewSession, isPending: isInitializingSession } = useMutation({
       mutationFn: async (team: Team) => {
         const { data } = await httpService.POST('/users', { body: { team } })
         return data?.access_token
       },
       onSuccess: (newToken, newGuide) => {
+        console.log('🚀 ~ newToken:', newToken)
         accessToken.value = newToken ?? null
         guide.value = newGuide
       },

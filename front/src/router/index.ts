@@ -1,3 +1,4 @@
+import { useAuthStore } from '@/stores/auth'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -29,6 +30,13 @@ const router = createRouter({
       path: '/choose-your-guide',
     },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const store = useAuthStore()
+  if (!store.accessToken && to.name !== 'choose-your-guide')
+    return next({ name: 'choose-your-guide', query: { prev: to.fullPath } })
+  next()
 })
 
 export default router

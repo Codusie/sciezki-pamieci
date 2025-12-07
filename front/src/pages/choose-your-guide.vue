@@ -10,7 +10,7 @@ import type { Team } from '@/schema'
 import IntroModal from '@/components/IntroModal.vue'
 
 import { useAuthStore } from '@/stores/auth'
-import { onBeforeMount, ref } from 'vue'
+import { nextTick, onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const store = useAuthStore()
@@ -28,7 +28,12 @@ const onTeamConfirm = async () => {
   if (!selectedTeam.value) return
 
   await store.createNewSession(selectedTeam.value)
-  router.push({ name: 'index' })
+  await nextTick()
+
+  const prevRoute = router.currentRoute.value.query.prev as string | undefined
+
+  if (prevRoute) router.push(prevRoute)
+  else router.push({ name: 'index' })
 }
 
 onBeforeMount(() => {
