@@ -44,7 +44,6 @@ class UserSession:
             context += f"{msg['role']}: {msg['content']}\n"
         return context
 
-# TODO autoremove old sessions after inactivity
 # TODO save history in database
 class SessionManager:
     """Manages all active user sessions"""
@@ -54,7 +53,7 @@ class SessionManager:
         
     def create_session(self, session_id: Optional[str], persona: str, landmark: str) -> UserSession:
         """Create a new session or return existing one"""
-        # self.cleanup_inactive_sessions(30) - if we want to cleanup every time
+        self.cleanup_inactive_sessions(30) # remove inactive sessions after 30 mins
         if not session_id:
             session_id = str(uuid.uuid4())
             
