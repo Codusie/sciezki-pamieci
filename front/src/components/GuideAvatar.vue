@@ -40,7 +40,7 @@ const image = computed(() => {
 .avatar-guide {
   width: v-bind(size);
   height: v-bind(size);
-  border-radius: 12px;
+  border-radius: 50%;
   z-index: 9900;
   box-shadow:
     0 10px 25px -5px rgba(0, 0, 0, 0.1),
@@ -50,7 +50,7 @@ const image = computed(() => {
   img {
     width: 100%;
     height: 100%;
-    border-radius: 12px;
+    border-radius: 50%;
     object-fit: cover;
   }
 }
