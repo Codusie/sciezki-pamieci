@@ -54,7 +54,7 @@ class SessionManager:
         
     def create_session(self, session_id: Optional[str], persona: str, landmark: str) -> UserSession:
         """Create a new session or return existing one"""
-        # self.cleanup_inactive_sessions(30) - if we want to cleanup every time
+        self.cleanup_inactive_sessions(30) # remove inactive sessions after 30 mins
         if not session_id:
             session_id = str(uuid.uuid4())
             
