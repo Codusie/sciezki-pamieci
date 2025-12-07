@@ -44,7 +44,7 @@ final class ChatController
             'timestamp' => $item['timestamp'],
         ], $history);
 
-        $responses = array_filter($responses, fn($item) => $item['landmark'] === $landmark->name);
+        $responses = array_values(array_filter($responses, fn($item) => $item['landmark'] === $landmark->name));
 
         return Response::json($responses);
     }
