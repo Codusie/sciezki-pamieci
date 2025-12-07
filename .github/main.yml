@@ -1,0 +1,29 @@
+on:
+  push:
+    branches: [main]
+name: Main
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    permissions:
+      deployments: write
+    steps:
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          cd domains/sciezki-pamieci
+          git pull
+          cd admin
+          php84 ~/composer/composer i --no-dev --no-interaction --prefer-dist --optimize-autoloader
+          php84 artisan optimize
+          php84 artisan migrate --force
+          php84 artisan filament:optimize
+          php84 artisan up
+   
