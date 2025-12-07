@@ -45,6 +45,7 @@ class UserSession:
         return context
 
 # TODO autoremove old sessions after inactivity
+# TODO save history in database
 class SessionManager:
     """Manages all active user sessions"""
     
