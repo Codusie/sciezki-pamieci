@@ -1,66 +1,46 @@
 <template>
-  <div class="chat-message-wrapper" :class="{ 'user-message': isUser, 'guide-message': isGuide }">
-    <Transition name="message-fade" appear>
-      <div class="chat-message">
-        <!-- Avatar -->
-        <div class="message-avatar">
-          <GuideAvatar v-if="isGuide" :size="'48px'" />
-          <Avatar
-            v-else
-            :label="avatarLabel"
-            :icon="avatarIcon"
-            :image="avatarImage"
-            shape="circle"
-            size="normal"
-            :class="avatarClass"
+  <div class="message-wrapper" :class="{ 'message-user': isUser, 'message-guide': isGuide }">
+    <div class="message-container">
+      <!-- Avatar -->
+      <div class="message-avatar">
+        <GuideAvatar v-if="isGuide" :size="'40px'" />
+      </div>
+
+      <!-- Content -->
+      <div class="message-bubble">
+        <!-- Author Name (Optional, good for context) -->
+        <div class="message-meta" v-if="isGuide">
+          <span class="author-name">{{ authorName || 'Przewodnik' }}</span>
+          ·
+          <span class="message-time" v-if="timestamp">{{ formattedTime }}</span>
+        </div>
+        <div class="message-meta" v-else>
+          <span class="message-time" v-if="timestamp">{{ formattedTime }}</span>
+        </div>
+
+        <!-- Image -->
+        <div v-if="image" class="message-image-container">
+           <Image
+            :src="image"
+            alt="Obraz od przewodnika"
+            preview
+            class="message-image"
           />
         </div>
 
-        <!-- Message Content -->
-        <div class="message-content">
-          <!-- Author and timestamp -->
-          <div class="message-header">
-            <span class="message-author">{{ isUser ? 'Ty' : (authorName ?? 'Przewodnik') }}</span>
-            <small class="message-time" v-if="timestamp">{{ formattedTime }}</small>
-          </div>
-
-          <!-- Image message -->
-          <div v-if="image && !isLoading" class="message-image">
-            <Image
-              :src="image"
-              :alt="`Image from ${author}`"
-              preview
-              class="landmark-image"
-              :class="{ 'image-loading': imageLoading }"
-              @load="imageLoading = false"
-              @error="imageError = true"
-            />
-            <div v-if="imageError" class="image-error">
-              <i class="pi pi-exclamation-triangle"></i>
-              <span>Failed to load image</span>
-            </div>
-          </div>
-
-          <!-- Text message -->
-          <div v-else-if="message" class="message-text">
-            <Card class="message-card" :class="messageCardClass">
-              <template #content>
-                <div class="message-body" v-html="formattedMessage"></div>
-              </template>
-            </Card>
-          </div>
-        </div>
+        <!-- Text -->
+        <div v-else-if="message" class="message-text" :style="userMessageStyle" v-html="formattedMessage"></div>
       </div>
-    </Transition>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import Avatar from 'primevue/avatar'
-import Card from 'primevue/card'
+import { computed } from 'vue'
 import Image from 'primevue/image'
 import GuideAvatar from './GuideAvatar.vue'
+import { useAuthStore } from '@/stores/auth'
+import { useGuideColor } from '@/composables/useGuideColor'
 
 interface Props {
   author: 'user' | 'guide'
@@ -68,47 +48,27 @@ interface Props {
   message: string
   image?: string
   timestamp?: Date
-  isLoading?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  isLoading: false,
-})
+const props = defineProps<Props>()
 
-const imageLoading = ref(true)
-const imageError = ref(false)
+const authStore = useAuthStore()
+const teamColor = useGuideColor(500)
 
 const isUser = computed(() => props.author === 'user')
 const isGuide = computed(() => props.author === 'guide')
 
-const avatarLabel = computed(() => {
-  if (props.author === 'user') return 'U'
-  if (props.author === 'guide') {
-    return props.authorName ? props.authorName.charAt(0).toUpperCase() : 'G'
+const userMessageStyle = computed(() => {
+  if (isUser.value) {
+    const isYellow = authStore.guide === 'kazimierz_wielki'
+    return {
+      backgroundColor: teamColor.value,
+      color: isYellow ? 'var(--p-surface-900)' : 'white'
+    }
   }
-  return 'G'
+  return {}
 })
 
-const avatarIcon = computed(() => {
-  if (props.author === 'user') return 'pi pi-user'
-  if (props.author === 'guide') return 'pi pi-compass'
-  return 'pi pi-compass'
-})
-
-const avatarImage = computed(() => {
-  // You can add custom avatar images here
-  return undefined
-})
-
-const avatarClass = computed(() => ({
-  'user-avatar': isUser.value,
-  'guide-avatar': isGuide.value,
-}))
-
-const messageCardClass = computed(() => ({
-  'user-card': isUser.value,
-  'guide-card': isGuide.value,
-}))
 
 const formattedTime = computed(() => {
   return props.timestamp?.toLocaleTimeString([], {
@@ -118,7 +78,6 @@ const formattedTime = computed(() => {
 })
 
 const formattedMessage = computed(() => {
-  // Simple markdown-like formatting
   return props.message
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -127,248 +86,122 @@ const formattedMessage = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.chat-message-wrapper {
-  margin-bottom: 1rem;
-  animation: slideUp 0.3s ease-out;
+.message-wrapper {
+  margin-bottom: 1.5rem;
+  width: 100%;
+  display: flex;
+  animation: message-slide-in 0.3s ease-out;
 
-  &.user-message {
-    display: flex;
+  &.message-user {
     justify-content: flex-end;
 
-    .chat-message {
+    .message-container {
       flex-direction: row-reverse;
+    }
 
-      .message-content {
-        margin-right: 0.75rem;
-        margin-left: 0;
+    .message-bubble {
+      align-items: flex-end;
+
+      .message-text {
+        background: var(--p-primary-200);
+        color: var(--p-text-color);
+        border-radius: 12px 0 12px 12px;
+      }
+      
+      .message-meta {
+        justify-content: flex-end;
       }
     }
   }
 
-  &.guide-message {
-    display: flex;
+  &.message-guide {
     justify-content: flex-start;
+
+    .message-bubble {
+      align-items: flex-start;
+
+      .message-text {
+        background: var(--p-surface-200);
+        border-radius: 0 12px 12px 12px;
+      }
+    }
   }
 }
 
-.chat-message {
+.message-container {
   display: flex;
-  align-items: flex-start;
-  max-width: 85%;
-  gap: 0.75rem;
+  gap: 1rem;
+  max-width: 80%;
+  
+  @media (max-width: 768px) {
+    max-width: 95%;
+  }
 }
 
 .message-avatar {
   flex-shrink: 0;
-  margin-top: 0.25rem;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
 
   .user-avatar {
-    background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-700));
-    color: white;
-  }
-
-  .guide-avatar {
-    background: linear-gradient(135deg, var(--p-green-500), var(--p-green-700));
-    color: white;
+    background: var(--p-primary-200);
+    color: var(--p-text-color);
+    font-weight: 500;
   }
 }
 
-.message-content {
-  flex: 1;
-  min-width: 0;
-  margin-left: 0.75rem;
+.message-bubble {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0; // Fix for flex child overflow
 }
 
-.message-header {
+.message-meta {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
-
-  .message-author {
-    font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--p-stone-600);
-  }
-
-  .message-time {
-    color: var(--p-stone-400);
-    font-size: 0.75rem;
-  }
+  font-size: 0.75rem;
+  color: var(--p-text-muted-color);
 }
 
-.message-loading {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 1rem;
-  background: var(--p-surface-50);
-  border-radius: var(--p-border-radius);
-  border: 1px solid var(--p-surface-200);
-
-  .loading-dots {
-    display: flex;
-    gap: 0.25rem;
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--p-primary-500);
-      animation: loadingPulse 1.4s infinite ease-in-out;
-
-      &:nth-child(1) {
-        animation-delay: -0.32s;
-      }
-      &:nth-child(2) {
-        animation-delay: -0.16s;
-      }
-      &:nth-child(3) {
-        animation-delay: 0s;
-      }
-    }
-  }
-
-  .loading-text {
-    color: var(--p-stone-400);
-    font-size: 0.875rem;
-  }
-}
-
-.message-image {
-  max-width: 300px;
-  border-radius: var(--p-border-radius);
-  overflow: hidden;
-  box-shadow: var(--p-shadow-2);
-
-  .landmark-image {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1/1.24;
-    display: block;
-    transition: opacity 0.3s ease;
-    border-radius: 16px;
-    overflow: hidden;
-
-    :deep(img) {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    &.image-loading {
-      opacity: 0.6;
-    }
-  }
-
-  .image-error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 2rem;
-    background: var(--p-surface-100);
-    color: var(--p-text-muted-color);
-
-    i {
-      font-size: 1.5rem;
-      color: var(--p-red-500);
-    }
-  }
+.author-name {
+  color: var(--p-stone-700);
+  font-weight: 500;
 }
 
 .message-text {
-  .message-card {
-    box-shadow: var(--p-shadow-1);
-    transition: all 0.2s ease;
-
-    /* Removed hover for mobile optimization */
-    /* &:hover {
-      box-shadow: var(--p-shadow-2);
-    } */
-
-    &.user-card {
-      background: linear-gradient(135deg, var(--p-primary-500), var(--p-primary-600));
-      border: none;
-
-      :deep(.p-card-content) {
-        .message-body {
-          color: white;
-          font-weight: 500;
-        }
-      }
-    }
-
-    &.guide-card {
-      background: var(--p-surface-0);
-      border: 1px solid var(--p-surface-200);
-      border-left: 4px solid var(--p-green-500);
-
-      :deep(.p-card-content) {
-        .message-body {
-          color: var(--p-stone-600);
-          line-height: 1.5;
-        }
-      }
-    }
+  padding: 1rem;
+  
+  :deep(strong) {
+    font-weight: 600;
+  }
+  
+  :deep(em) {
+    font-style: italic;
   }
 }
 
-// Animations
-@keyframes slideUp {
+.message-image-container {
+  border-radius: 0 12px 12px 12px;
+  overflow: hidden;
+  max-width: 300px;
+  
+  :deep(img) {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+@keyframes message-slide-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes loadingPulse {
-  0%,
-  80%,
-  100% {
-    transform: scale(0.8);
-    opacity: 0.5;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-// Message transitions
-.message-fade-enter-active {
-  transition: all 0.4s ease-out;
-}
-
-.message-fade-enter-from {
-  opacity: 0;
-  transform: translateY(30px) scale(0.95);
-}
-
-.message-fade-enter-to {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-
-// Responsive design
-@media (max-width: 768px) {
-  .chat-message {
-    max-width: 95%;
-  }
-
-  .message-content {
-    margin-left: 0.5rem;
-  }
-
-  .message-image {
-    max-width: 250px;
   }
 }
 </style>

@@ -4,13 +4,7 @@
       <i class="pi pi-arrow-left"></i>
     </Button>
     <Icon v-if="icon" :icon="icon" />
-    <div>
-      <div class="header__title">{{ title }}</div>
-      <div v-if="subtitle" class="header__subtitle">
-        {{ subtitle }}
-      </div>
-    </div>
-
+    <div class="header__title">{{ title }}</div>
     <slot></slot>
   </header>
 </template>
@@ -23,7 +17,6 @@ import { useRouter } from 'vue-router'
 interface Props {
   title: string
   icon?: string
-  subtitle?: string
   back?: boolean
 }
 
@@ -52,8 +45,7 @@ const onBack = () => {
   gap: 1rem;
   height: 5rem;
   padding: calc(env(safe-area-inset-top)) 0.75rem 0.5rem 0.75rem;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
+  background: var(--p-surface-100);
 
   &__title {
     font-weight: 500;

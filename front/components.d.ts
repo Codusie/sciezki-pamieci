@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    BaseLayout: typeof import('./src/components/BaseLayout.vue')['default']
     BaseLoading: typeof import('./src/components/BaseLoading.vue')['default']
     Button: typeof import('./src/components/Button.vue')['default']
     Chat: typeof import('./src/components/Chat.vue')['default']
@@ -25,6 +26,7 @@ declare module 'vue' {
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
     MapMarker: typeof import('./src/components/MapMarker.vue')['default']
+    Nav: typeof import('./src/components/Nav.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

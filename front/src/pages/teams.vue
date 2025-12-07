@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <BaseLayout>
     <Header
       title="Ranking Drużyn"
       icon="pi pi-users"
@@ -76,12 +76,12 @@
         </div>
       </div>
     </BaseLoading>
-  </Layout>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { httpService } from '@/api'
-import Layout from '@/components/Layout.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
 import { useQuery } from '@tanstack/vue-query'
 import { computed } from 'vue'

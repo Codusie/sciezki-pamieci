@@ -100,13 +100,10 @@ export const useChat = (landmark: MaybeRef<Landmark>) => {
 
   const scrollToBottom = () => {
     nextTick(() => {
-      const chatContainer = document.querySelector('.p-scrollpanel-content')
-      if (chatContainer) {
-        chatContainer.scrollTo({
-          top: chatContainer.scrollHeight,
-          behavior: 'smooth',
-        })
-      }
+      window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: 'smooth',
+      })
     })
   }
 

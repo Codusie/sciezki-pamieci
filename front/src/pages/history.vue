@@ -1,5 +1,5 @@
 <template>
-  <Layout>
+  <BaseLayout>
     <Header 
       title="Twoja historia"
       icon="pi pi-compass"
@@ -42,13 +42,13 @@
         </div>
       </div>
     </BaseLoading>
-  </Layout>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import Icon from '@/components/Icon.vue'
 import { httpService } from '@/api'
-import Layout from '@/components/Layout.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
 import { useQuery } from '@tanstack/vue-query'
 import Header from '@/components/Header.vue'

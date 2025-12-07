@@ -8,6 +8,7 @@
 .button {
   width: 3rem;
   height: 3rem;
+  min-width: 3rem;
   display: flex;
   justify-content: center;
   align-items: center;

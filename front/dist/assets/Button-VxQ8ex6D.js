@@ -1,0 +1,1 @@
+import{t,c as n,e as o,o as s}from"./index-CgOFaOxE.js";const c={},_={class:"button"};function r(e,a){return s(),n("div",_,[o(e.$slots,"default",{},void 0,!0)])}const u=t(c,[["render",r],["__scopeId","data-v-3c9d0845"],["__file","/usr/src/app/src/components/Button.vue"]]);export{u as _};

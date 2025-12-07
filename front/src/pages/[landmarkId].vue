@@ -1,12 +1,13 @@
 <template>
-  <Header :title="landmark?.name || 'Wczytywanie'" :subtitle="landmark?.localization_name" back>
-    <GuidesStats
-      :kazimierz_wielki_visits_count="landmark?.kazimierz_wielki_visits_count ?? 0"
-      :twardowski_visits_count="landmark?.twardowski_visits_count ?? 0"
-      :rejewski_visits_count="landmark?.rejewski_visits_count ?? 0"
-    />
-  </Header>
-  <Layout>
+  <BaseLayout :nav="false">
+    <Header :title="landmark?.name || 'Wczytywanie'" back>
+      <GuidesStats
+        :kazimierz_wielki_visits_count="landmark?.kazimierz_wielki_visits_count ?? 0"
+        :twardowski_visits_count="landmark?.twardowski_visits_count ?? 0"
+        :rejewski_visits_count="landmark?.rejewski_visits_count ?? 0"
+      />
+    </Header>
+
     <BaseLoading :loading="isLoading">
       <div class="landmark-view">
         <div class="landmark-content">
@@ -38,13 +39,13 @@
       :is-typing="chat.isTyping.value"
       @send="handleSendMessage"
     />
-  </Layout>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import Header from '@/components/Header.vue'
 import BaseLoading from '@/components/BaseLoading.vue'
-import Layout from '@/components/Layout.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 import Chat from '@/components/Chat.vue'
 import ChatInput from '@/components/ChatInput.vue'
 import Card from 'primevue/card'
@@ -111,15 +112,12 @@ watch(
 
 <style lang="scss" scoped>
 .landmark-view {
-  max-width: 1200px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 2rem;
-  padding-bottom: 140px; // Space for fixed input
+  padding-bottom: 300px; // Space for fixed input
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  height: calc(100vh - 80px); // Full height minus navbar
-  overflow: hidden;
 }
 
 .landmark-header {
@@ -160,7 +158,6 @@ watch(
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .chat-placeholder {
@@ -191,48 +188,6 @@ watch(
         margin: 0;
         font-size: 1.1rem;
       }
-    }
-  }
-}
-
-// Ensure body and html don't scroll when chat is active
-:global(body) {
-  &:has(.chat-input-fixed) {
-    overflow: hidden;
-  }
-}
-
-// Responsive design
-@media (max-width: 768px) {
-  .landmark-view {
-    padding: 1rem;
-    padding-bottom: 120px; // Adjust for mobile input
-    gap: 1rem;
-  }
-
-  .landmark-header {
-    padding: 1.5rem;
-
-    .landmark-title h1 {
-      font-size: 2rem;
-    }
-  }
-}
-
-@media (max-width: 480px) {
-  .landmark-view {
-    padding-bottom: 110px;
-  }
-
-  .landmark-header {
-    padding: 1rem;
-
-    .landmark-title h1 {
-      font-size: 1.75rem;
-    }
-
-    .landmark-description {
-      font-size: 1rem;
     }
   }
 }

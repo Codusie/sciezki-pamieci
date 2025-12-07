@@ -1,7 +1,7 @@
 <template>
   <Layout>
     <div class="map-view">
-      <GuideAvatar class="map-view__avatar" />
+      <GuideAvatar class="map-view__avatar" style="z-index: 9900;" />
 
       <Map
         class="map-view__map"
