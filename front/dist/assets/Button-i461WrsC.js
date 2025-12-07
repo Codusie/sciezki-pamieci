@@ -1,0 +1,1 @@
+import{x as n,c as o,r as t,o as s}from"./index-Crr1jn8N.js";const c={},_={class:"button"};function r(e,a){return s(),o("div",_,[t(e.$slots,"default",{},void 0,!0)])}const l=n(c,[["render",r],["__scopeId","data-v-439ebab3"]]);export{l as _};

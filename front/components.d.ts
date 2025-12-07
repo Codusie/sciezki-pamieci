@@ -17,24 +17,18 @@ declare module 'vue' {
     ChatInput: typeof import('./src/components/ChatInput.vue')['default']
     ChatMessage: typeof import('./src/components/ChatMessage.vue')['default']
     ChooseGuide: typeof import('./src/components/ChooseGuide.vue')['default']
-    ChooseTeam: typeof import('./src/components/ChooseTeam.vue')['default']
-    copy: typeof import('./src/components/Button copy.vue')['default']
     Dialog: typeof import('primevue/dialog')['default']
     GuideAvatar: typeof import('./src/components/GuideAvatar.vue')['default']
     GuidesStats: typeof import('./src/components/GuidesStats.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     Icon: typeof import('./src/components/Icon.vue')['default']
-    InputText: typeof import('primevue/inputtext')['default']
     Layout: typeof import('./src/components/Layout.vue')['default']
     Map: typeof import('./src/components/Map.vue')['default']
     MapMarker: typeof import('./src/components/MapMarker.vue')['default']
-    Menubar: typeof import('primevue/menubar')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
   export interface GlobalDirectives {
-    AnimateOnScroll: typeof import('primevue/animateonscroll')['default']
-    Ripple: typeof import('primevue/ripple')['default']
     Tooltip: typeof import('primevue/tooltip')['default']
   }
 }
