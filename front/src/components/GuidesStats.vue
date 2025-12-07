@@ -33,7 +33,7 @@ const calcPercentage = (count: number) => {
   return Math.round((count / totalVisits.value) * 100)
 }
 
-const tooltipText = `Liczba wizyt u przewodników:
+const tooltipText = `Liczba wizyt z przewodnikiem:
 - Marian Rejewski: ${props.rejewski_visits_count}
 - Król Kazimierz Wielki: ${props.kazimierz_wielki_visits_count}
 - Pan Twardowski: ${props.twardowski_visits_count}
