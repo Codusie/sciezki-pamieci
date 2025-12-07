@@ -10,12 +10,13 @@ restart:
 bash:
 	docker compose exec api bash
 
-build:
+init:
 	docker compose exec api cp .env.example .env
 	docker compose exec api touch database/database.sqlite
 	docker compose exec api composer install
 	docker compose exec api php artisan key:generate
 	docker compose exec api php artisan migrate:fresh --seed
+	docker compose exec front bun install
 
 update:
 	docker compose exec api composer update
@@ -35,7 +36,11 @@ types:
 format:
 	docker compose exec api vendor/bin/pint
 
+build:
+	docker compose exec front bun run build-only
+
 pre-commit:
 	make types
 	make format
 	make test
+	make build
